@@ -14,7 +14,7 @@ class Piece{
 	Board* board;
 	char* availableMoves;
 	int numMoves;
-	static const char cols[7] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'};
+	static constexpr char cols[8] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'};
 	Piece(char* position1, bool white1, PieceType type1, Board* board);
 	void updateAvailableMoves();
 };

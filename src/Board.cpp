@@ -10,6 +10,6 @@ void Board::initBoard(){
 }
 
 bool Board::isEmpty(char col, char row){
-
+	return true;
 }
 

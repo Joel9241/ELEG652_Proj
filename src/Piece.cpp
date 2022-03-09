@@ -1,7 +1,7 @@
 #include "Piece.hpp"
 
 Piece::Piece(char* position1, bool white1, PieceType type1, Board* board1){
-	position = position1
+	position = position1;
 	white = white1;
 	type = type1;
 	board = board1;
