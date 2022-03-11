@@ -16,7 +16,7 @@ runTests.exe: obj/testsmain.o obj/Piece.o obj/Board.o obj/PieceTests.o obj/Board
 	$(CC) -o runTests.exe obj/testsmain.o obj/Piece.o obj/Board.o obj/PieceTests.o obj/BoardTests.o 
 
 obj/%.o: tests/%.cpp
-	$(CC) -c $< -o $@
+	$(CC) -Isrc/ -c $< -o $@
 
 clean:
 	rm -f obj/*.o chess.exe runTests.exe

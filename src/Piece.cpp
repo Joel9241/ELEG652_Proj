@@ -1,10 +1,9 @@
 #include "Piece.hpp"
 
-Piece::Piece(char* position1, bool white1, PieceType type1, Board* board1){
+Piece::Piece(char* position1, bool white1, PieceType type1){
 	position = position1;
 	white = white1;
 	type = type1;
-	board = board1;
 	if(type == pawn){
 		availableMoves = new char[4 * 2];
 		numMoves = 2;
@@ -15,7 +14,7 @@ Piece::Piece(char* position1, bool white1, PieceType type1, Board* board1){
 	}
 	else if(type == knight){
 		availableMoves = new char[8 * 2];
-		numMoves = 0;
+		numMoves = 2;
 	}
 	else if(type == bishop){
 		availableMoves = new char[13 * 2];
@@ -31,6 +30,20 @@ Piece::Piece(char* position1, bool white1, PieceType type1, Board* board1){
 	}
 }
 
+char* Piece::getPosition(){
+	return position;
+}
+
+bool Piece::isWhite(){
+	return white;
+}
+
+PieceType Piece::getType(){
+	return type;
+}
+
+
+/*
 void Piece::updateAvailableMoves(){
 	char column = position[0];
 	char row = position[1];
@@ -161,4 +174,6 @@ void Piece::updateAvailableMoves(){
 	else if(type == queen){
 
 	}
+
 }
+*/
