@@ -4,7 +4,12 @@ Board::Board(){
 	initBoard();	
 }
 
+Board::Board(Piece** initState){
+	tiles = initState;
+}
+
 void Board::initBoard(){
+	tiles = new Piece*[64];
 	tiles[(0 * 8) + 0] = new Piece((char*)"A1", true, rook);	
 	tiles[(0 * 8) + 7] = new Piece((char*)"H1", true, rook);
 	tiles[(7 * 8) + 0] = new Piece((char*)"A8", false, rook);
@@ -54,3 +59,150 @@ Piece* Board::getPiece(char col, char row){
 	}
 	return tiles[(((int) row - 49) * 8) + (((int) col) - 65)];
 }
+
+//Don't forget to check for checks
+void Board::updatePieceMoves(Piece* p){
+	PieceType type = p->getType();
+	if(type == pawn){
+		updatePawnMoves(p);
+	}
+	else if(type == rook){
+	
+	}
+	else if(type == knight){
+
+	}
+	else if(type == bishop){
+
+	}
+	else if(type == king){
+
+	}
+	else if(type == queen){
+
+	}
+
+}
+
+void Board::updatePawnMoves(Piece* p){
+	char column = p->getPosition()[0];
+	char row = p->getPosition()[1];
+	if(p->isWhite()){
+		if(row == '2'){
+			if(isEmpty(column, '3')){
+				p->availableMoves[(p->numMoves * 2)] = column;
+				p->availableMoves[(p->numMoves * 2) + 1] = '3';
+				p->numMoves++;
+				if(isEmpty(column, '4')){
+					p->availableMoves[(p->numMoves * 2)] = column;
+					p->availableMoves[(p->numMoves * 2) + 1] = '4';
+					p->numMoves++;
+				}
+			}
+		}
+		else{
+			if(isEmpty(column, (char) (((int)row) + 1))){
+				p->availableMoves[(p->numMoves * 2)] = column;
+				p->availableMoves[(p->numMoves * 2) + 1] = (char)(((int)row) + 1);
+				p->numMoves++;
+			}
+
+		}
+		if(column != 'H'){
+			if(!isEmpty((char)((int)column + 1), (char)((int)row + 1))){
+				if(!getPiece((char)((int)column + 1), (char)((int)row + 1))->isWhite()){
+					p->availableMoves[(p->numMoves * 2)] = (char)((int)column + 1);
+					p->availableMoves[(p->numMoves * 2) + 1] = (char)((int)row + 1);
+					p->numMoves++;
+				}
+			}
+		
+		}
+		if(column != 'A'){
+			if(!isEmpty((char)((int)column - 1), (char)((int)row + 1))){
+				if(!getPiece((char)((int)column - 1), (char)((int)row + 1))->isWhite()){
+					p->availableMoves[(p->numMoves * 2)] = (char)((int)column - 1);
+					p->availableMoves[(p->numMoves * 2) + 1] = (char)((int)row + 1);
+					p->numMoves++;
+				}
+			}
+		}
+	}
+	else{
+		if(row == '7'){
+			if(isEmpty(column, '6')){
+				p->availableMoves[(p->numMoves * 2)] = column;
+				p->availableMoves[(p->numMoves * 2) + 1] = '6';
+				p->numMoves++;
+				if(isEmpty(column, '5')){
+					p->availableMoves[(p->numMoves * 2)] = column;
+					p->availableMoves[(p->numMoves * 2) + 1] = '5';
+					p->numMoves++;
+				}
+			}
+		}
+		else{
+			if(isEmpty(column, (char) (((int)row) - 1))){
+				p->availableMoves[(p->numMoves * 2)] = column;
+				p->availableMoves[(p->numMoves * 2) + 1] = (char)(((int)row) - 1);
+				p->numMoves++;
+			}
+		}
+		if(column != 'H'){
+			if(!isEmpty((char)((int)column + 1), (char)((int)row - 1))){
+				if(getPiece((char)((int)column + 1), (char)((int)row - 1))->isWhite()){
+					p->availableMoves[(p->numMoves * 2)] = (char)((int)column + 1);
+					p->availableMoves[(p->numMoves * 2) + 1] = (char)((int)row - 1);
+					p->numMoves++;
+				}
+			}
+		
+		}
+		if(column != 'A'){
+			if(!isEmpty((char)((int)column - 1), (char)((int)row - 1))){
+				if(getPiece((char)((int)column - 1), (char)((int)row - 1))->isWhite()){
+					p->availableMoves[(p->numMoves * 2)] = (char)((int)column - 1);
+					p->availableMoves[(p->numMoves * 2) + 1] = (char)((int)row - 1);
+					p->numMoves++;
+				}
+			}
+		}
+	}
+}
+
+/*
+void Board::updateRookMoves(Piece *p){
+	int col = (int)position[0];
+	int row = (int)position[1];
+	int colOffset = 1;
+	int rowOffset = 0;
+	while(board->isEmpty((char)(col + colOffset), (char)(row + rowOffset)) && (col + colOffset < 8)){
+		p->availableMoves[(numMoves * 2) + 1] = (char)(col + colOffset);
+		p->availableMoves[(numMoves * 2) + 2] = (char)(row + rowOffset);
+		numMoves++;
+		colOffset++;
+	}
+	colOffset = 1;
+	while(board->isEmpty((char)(col - colOffset), (char)(row + rowOffset)) && (col - colOffset > 0)){
+		p->availableMoves[(numMoves * 2) + 1] = (char)(col - colOffset);
+		p->availableMoves[(numMoves * 2) + 2] = (char)(row + rowOffset);
+		numMoves++;
+		colOffset++;
+	}
+	colOffset = 0;
+	rowOffset = 1;
+	while(board->isEmpty((char)(col + colOffset), (char)(row + rowOffset)) && (row + rowOffset < 8)){
+		p->availableMoves[(numMoves * 2) + 1] = (char)(col + colOffset);
+		p->availableMoves[(numMoves * 2) + 2] = (char)(row + rowOffset);
+		numMoves++;
+		rowOffset++;
+	}
+	rowOffset = 1;
+	while(board->isEmpty((char)(col + colOffset), (char)(row - rowOffset)) && (row - rowOffset > 0)){
+		p->availableMoves[(numMoves * 2) + 1] = (char)(col + colOffset);
+		p->availableMoves[(numMoves * 2) + 2] = (char)(row - rowOffset);
+		numMoves++;
+		rowOffset++;
+	}
+}
+*/

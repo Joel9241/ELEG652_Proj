@@ -11,12 +11,12 @@ class Piece{
 	char* position;
 	bool white;
 	PieceType type; 
-	char* availableMoves;
-	int numMoves;
 	static constexpr char cols[8] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'};
 	public:
+	char* availableMoves;
 	Piece(char* position1, bool white1, PieceType type1);
 	char* getPosition();
 	bool isWhite();
 	PieceType getType();
+	int numMoves;
 };
