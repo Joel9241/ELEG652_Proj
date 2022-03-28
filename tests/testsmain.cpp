@@ -131,157 +131,106 @@ bool initBoardTest(){
 	return !failed;
 }
 
-bool updatePawnMovesTest(){
+bool pieceMoveTest(Piece** pieces, int numPieces, Piece* tpiece, char* correctMoves, int correctNumMoves){
 	bool failed = false;
-	//Test 1
 	Piece** state = new Piece*[64];
 	for(int i = 0; i < 8; i++){
 		for(int j = 0; j < 8; j++){
 			state[(i * 8) + j] = NULL;
 		}
 	}
-	state[(1 * 8) + 1] = new Piece((char*)"B2", true, pawn);
-	state[(2 * 8) + 0] = new Piece((char*)"A3", false, pawn);
-	state[(2 * 8) + 2] = new Piece((char*)"C3", true, pawn);
+	Piece* tmp;
+	for(int i = 0; i < numPieces; i++){
+		tmp = pieces[i];
+		int col = (int)pieces[i]->getPosition()[0] - 65;
+		int row = (int)pieces[i]->getPosition()[1] - 49;
+		state[(row * 8) + col] = tmp;
+	}
 	Board x = Board(state);
-	Piece *p = x.getPiece('B', 2 + '0');
-	x.updatePieceMoves(p);
+	x.updatePieceMoves(tpiece);
+	for(int i = 0; i < correctNumMoves * 2; i++){
+		if(tpiece->availableMoves[i] != correctMoves[i]){
+			printf("Failed on comparison %d, value should be %c but is %c \n", i, correctMoves[i], tpiece->availableMoves[i]);
+			failed = true;
+		}
+	}
+	if(tpiece->numMoves != correctNumMoves){
+		printf("Incorrect number of moves\n");
+		failed = true;
+	}
+	return failed;
+}
+
+bool updatePawnMovesTest(){
+	bool failed = false;
+	//Test 1
+	int numPieces = 3;
+	Piece** pieces = new Piece*[numPieces];
+	pieces[0] = new Piece((char*)"B2", true, pawn);
+	pieces[1] = new Piece((char*)"A3", false, pawn);
+	pieces[2] = new Piece((char*)"C3", true, pawn);
+	Piece* tpiece = pieces[0];
 	int correctNumMoves = 3;
 	char *correctMoves = new char[correctNumMoves * 2];
 	correctMoves = "B3B4A3";
-	for(int i = 0; i < correctNumMoves * 2; i++){
-		if(p->availableMoves[i] != correctMoves[i]){
-			printf("Failed on comparison %d, value should be %c but is %c \n", i, correctMoves[i], p->availableMoves[i]);
-			failed = true;
-		}
-	}
-	if(p->numMoves != correctNumMoves){
-		printf("Incorrect number of moves for Test 1\n");
-		failed = true;
-	}
+	failed |= pieceMoveTest(pieces, numPieces, tpiece, correctMoves, correctNumMoves);
 	
 	//Test 2
-	state = new Piece*[64];
-	for(int i = 0; i < 8; i++){
-		for(int j = 0; j < 8; j++){
-			state[(i * 8) + j] = NULL;
-		}
-	}
-	state[(6 * 8) + 4] = new Piece((char*)"E7", false, pawn);
-	state[(5 * 8) + 3] = new Piece((char*)"D6", false, pawn);
-	state[(5 * 8) + 5] = new Piece((char*)"F6", true, pawn);
-	x = Board(state);
-	p = x.getPiece('E', 7 + '0');
-	x.updatePieceMoves(p);
+	numPieces = 3;
+	pieces = new Piece*[numPieces];
+	pieces[0] = new Piece((char*)"E7", false, pawn);
+	pieces[1] = new Piece((char*)"D6", false, pawn);
+	pieces[2] = new Piece((char*)"F6", true, pawn);
+	tpiece = pieces[0];
 	correctNumMoves = 3;
 	correctMoves = new char[correctNumMoves * 2];
 	correctMoves = "E6E5F6";
-	for(int i = 0; i < correctNumMoves * 2; i++){
-		if(p->availableMoves[i] != correctMoves[i]){
-			printf("Failed on comparison %d, value should be %c but is %c \n", i, correctMoves[i], p->availableMoves[i]);
-			failed = true;
-		}
-	}
-	if(p->numMoves != correctNumMoves){
-		printf("Incorrect number of moves for Test 2\n");
-		failed = true;
-	}
-	
+	failed |= pieceMoveTest(pieces, numPieces, tpiece, correctMoves, correctNumMoves);
+
 	//Test 3
-	state = new Piece*[64];
-	for(int i = 0; i < 8; i++){
-		for(int j = 0; j < 8; j++){
-			state[(i * 8) + j] = NULL;
-		}
-	}
-	state[(1 * 8) + 0] = new Piece((char*)"A2", true, pawn);
-	state[(2 * 8) + 1] = new Piece((char*)"B3", false, pawn);
-	x = Board(state);
-	p = x.getPiece('A', 2 + '0');
-	x.updatePieceMoves(p);
+	numPieces = 2;
+	pieces = new Piece*[numPieces];
+	pieces[0] = new Piece((char*)"A2", true, pawn);
+	pieces[1] = new Piece((char*)"B3", false, pawn);
+	tpiece = pieces[0];
 	correctNumMoves = 3;
 	correctMoves = new char[correctNumMoves * 2];
 	correctMoves = "A3A4B3";
-	for(int i = 0; i < correctNumMoves * 2; i++){
-		if(p->availableMoves[i] != correctMoves[i]){
-			printf("Failed on comparison %d, value should be %c but is %c \n", i, correctMoves[i], p->availableMoves[i]);
-			failed = true;
-		}
-	}
-	if(p->numMoves != correctNumMoves){
-		printf("Incorrect number of moves for Test 3\n");
-		failed = true;
-	}
-	
+	failed |= pieceMoveTest(pieces, numPieces, tpiece, correctMoves, correctNumMoves);
+
 	//Test 4
-	state = new Piece*[64];
-	for(int i = 0; i < 8; i++){
-		for(int j = 0; j < 8; j++){
-			state[(i * 8) + j] = NULL;
-		}
-	}
-	state[(6 * 8) + 7] = new Piece((char*)"H7", false, pawn);
-	state[(5 * 8) + 6] = new Piece((char*)"G6", true, pawn);
-	x = Board(state);
-	p = x.getPiece('H', 7 + '0');
-	x.updatePieceMoves(p);
+	numPieces = 2;
+	pieces = new Piece*[numPieces];
+	pieces[0] = new Piece((char*)"H7", false, pawn);
+	pieces[1] = new Piece((char*)"G6", true, pawn);
+	tpiece = pieces[0];
 	correctNumMoves = 3;
 	correctMoves = new char[correctNumMoves * 2];
 	correctMoves = "H6H5G6";
-	for(int i = 0; i < correctNumMoves * 2; i++){
-		if(p->availableMoves[i] != correctMoves[i]){
-			printf("Failed on comparison %d, value should be %c but is %c \n", i, correctMoves[i], p->availableMoves[i]);
-			failed = true;
-		}
-	}
-	if(p->numMoves != correctNumMoves){
-		printf("Incorrect number of moves for Test 4\n");
-		failed = true;
-	}
+	failed |= pieceMoveTest(pieces, numPieces, tpiece, correctMoves, correctNumMoves);
 	
 	//Test 5
-	state = new Piece*[64];
-	for(int i = 0; i < 8; i++){
-		for(int j = 0; j < 8; j++){
-			state[(i * 8) + j] = NULL;
-		}
-	}
-	state[(6 * 8) + 7] = new Piece((char*)"H7", false, pawn);
-	state[(4 * 8) + 7] = new Piece((char*)"H5", true, pawn);
-	x = Board(state);
-	p = x.getPiece('H', 7 + '0');
-	x.updatePieceMoves(p);
+	numPieces = 2;
+	pieces = new Piece*[numPieces];
+	pieces[0] = new Piece((char*)"H7", false, pawn);
+	pieces[1] = new Piece((char*)"H5", true, pawn);
+	tpiece = pieces[0];
 	correctNumMoves = 1;
 	correctMoves = new char[correctNumMoves * 2];
 	correctMoves = "H6";
-	for(int i = 0; i < correctNumMoves * 2; i++){
-		if(p->availableMoves[i] != correctMoves[i]){
-			printf("Failed on comparison %d, value should be %c but is %c \n", i, correctMoves[i], p->availableMoves[i]);
-			failed = true;
-		}
-	}
-	if(p->numMoves != correctNumMoves){
-		printf("Incorrect number of moves for Test 5\n");
-		failed = true;
-	}
+	failed |= pieceMoveTest(pieces, numPieces, tpiece, correctMoves, correctNumMoves);
 	
 	//Test 6
-	state = new Piece*[64];
-	for(int i = 0; i < 8; i++){
-		for(int j = 0; j < 8; j++){
-			state[(i * 8) + j] = NULL;
-		}
-	}
-	state[(6 * 8) + 7] = new Piece((char*)"H7", false, pawn);
-	state[(5 * 8) + 7] = new Piece((char*)"H6", true, pawn);
-	x = Board(state);
-	p = x.getPiece('H', 7 + '0');
-	x.updatePieceMoves(p);
+	numPieces = 2;
+	pieces = new Piece*[numPieces];
+	pieces[0] = new Piece((char*)"H7", false, pawn);
+	pieces[1] = new Piece((char*)"H6", true, pawn);
+	tpiece = pieces[0];
 	correctNumMoves = 0;
-	if(p->numMoves != correctNumMoves){
-		printf("Incorrect number of moves for Test 6\n");
-		failed = true;
-	}
+	correctMoves = NULL;
+	correctMoves = "H6";
+	failed |= pieceMoveTest(pieces, numPieces, tpiece, correctMoves, correctNumMoves);
+	
 	return !failed;
 }
 
