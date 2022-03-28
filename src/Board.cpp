@@ -67,7 +67,7 @@ void Board::updatePieceMoves(Piece* p){
 		updatePawnMoves(p);
 	}
 	else if(type == rook){
-	
+		updateRookMoves(p);	
 	}
 	else if(type == knight){
 
@@ -170,39 +170,81 @@ void Board::updatePawnMoves(Piece* p){
 	}
 }
 
-/*
 void Board::updateRookMoves(Piece *p){
-	int col = (int)position[0];
-	int row = (int)position[1];
+	char col = (int)p->getPosition()[0];
+	char row = (int)p->getPosition()[1];
 	int colOffset = 1;
 	int rowOffset = 0;
-	while(board->isEmpty((char)(col + colOffset), (char)(row + rowOffset)) && (col + colOffset < 8)){
-		p->availableMoves[(numMoves * 2) + 1] = (char)(col + colOffset);
-		p->availableMoves[(numMoves * 2) + 2] = (char)(row + rowOffset);
-		numMoves++;
+	//printf("case 1\n");
+	while(isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset)) && ((int)col - 65 + colOffset < 8)){
+		//printf("Pos1: %c%c\n", (char)((int)col + colOffset), (char)((int)row + rowOffset));
+		p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
+		p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
+		p->numMoves++;
 		colOffset++;
 	}
+	if((int)col - 65 + colOffset < 8){
+		if(!isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset))){
+			if(getPiece((char)((int)col + colOffset), (char)((int)row + rowOffset))->isWhite() != p->isWhite()){
+				p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
+				p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
+				p->numMoves++;
+			}
+		}
+	}
 	colOffset = 1;
-	while(board->isEmpty((char)(col - colOffset), (char)(row + rowOffset)) && (col - colOffset > 0)){
-		p->availableMoves[(numMoves * 2) + 1] = (char)(col - colOffset);
-		p->availableMoves[(numMoves * 2) + 2] = (char)(row + rowOffset);
-		numMoves++;
+	//printf("case 2\n");
+	while(isEmpty((char)((int)col - colOffset), (char)((int)row + rowOffset)) && ((int)col - 65 - colOffset >= 0)){
+		//printf("Pos2: %c%c\n", (char)((int)col - colOffset), (char)((int)row + rowOffset));
+		p->availableMoves[p->numMoves * 2] = (char)(col - colOffset);
+		p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
+		p->numMoves++;
 		colOffset++;
+	}
+	if((int)col - 65 - colOffset > 0){
+		if(!isEmpty((char)((int)col - colOffset), (char)((int)row + rowOffset))){
+			if(getPiece((char)((int)col - colOffset), (char)((int)row + rowOffset))->isWhite() != p->isWhite()){
+				p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
+				p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
+				p->numMoves++;
+			}
+		}
 	}
 	colOffset = 0;
 	rowOffset = 1;
-	while(board->isEmpty((char)(col + colOffset), (char)(row + rowOffset)) && (row + rowOffset < 8)){
-		p->availableMoves[(numMoves * 2) + 1] = (char)(col + colOffset);
-		p->availableMoves[(numMoves * 2) + 2] = (char)(row + rowOffset);
-		numMoves++;
+	//printf("case 3\n");
+	while(isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset)) && ((int)row - 49 + rowOffset < 8)){
+		//printf("Pos3: %c%c\n", (char)((int)col + colOffset), (char)((int)row + rowOffset));
+		p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
+		p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
+		p->numMoves++;
 		rowOffset++;
+	}
+	if(((int)row - 49 + rowOffset < 8)){
+		if(!isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset))){
+			if(getPiece((char)((int)col + colOffset), (char)((int)row + rowOffset))->isWhite() != p->isWhite()){
+				p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
+				p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
+				p->numMoves++;
+			}
+		}
 	}
 	rowOffset = 1;
-	while(board->isEmpty((char)(col + colOffset), (char)(row - rowOffset)) && (row - rowOffset > 0)){
-		p->availableMoves[(numMoves * 2) + 1] = (char)(col + colOffset);
-		p->availableMoves[(numMoves * 2) + 2] = (char)(row - rowOffset);
-		numMoves++;
+	//printf("case 4\n");
+	while(isEmpty((char)((int)col + colOffset), (char)((int)row - rowOffset)) && ((int)row - 49 - rowOffset >= 0)){
+		//printf("Pos4: %c%c\n", (char)((int)col + colOffset), (char)((int)row + rowOffset));
+		p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
+		p->availableMoves[p->numMoves * 2 + 1] = (char)(row - rowOffset);
+		p->numMoves++;
 		rowOffset++;
 	}
+	if(((int)row - 49 - rowOffset > 0)){
+		if(!isEmpty((char)((int)col + colOffset), (char)((int)row - rowOffset))){
+			if(getPiece((char)((int)col + colOffset), (char)((int)row - rowOffset))->isWhite() != p->isWhite()){
+				p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
+				p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
+				p->numMoves++;
+			}
+		}
+	}
 }
-*/
