@@ -367,6 +367,61 @@ bool updateRookMovesTest(){
 	return !failed;
 }
 
+bool updateBishopMovesTest(){
+	bool failed = false;
+	//Test 1
+	Piece** state = new Piece*[64];
+	for(int i = 0; i < 8; i++){
+		for(int j = 0; j < 8; j++){
+			state[(i * 8) + j] = NULL;
+		}
+	}
+	state[(4 * 8) + 4] = new Piece((char*)"E5", true, bishop);
+	Board x = Board(state);
+	Piece *p = x.getPiece('E', 5 + '0');
+	x.updatePieceMoves(p);
+	int correctNumMoves = 13;
+	char *correctMoves = new char[correctNumMoves * 2];
+	correctMoves = "F6G7H8D4C3B2A1F4G3H2D6C7B8";
+	for(int i = 0; i < correctNumMoves * 2; i++){
+		if(p->availableMoves[i] != correctMoves[i]){
+			printf("Failed on comparison %d, value should be %c but is %c \n", i, correctMoves[i], p->availableMoves[i]);
+			failed = true;
+		}
+	}
+	if(p->numMoves != correctNumMoves){
+		printf("Incorrect number of moves for Test 1\n");
+		failed = true;
+	}
+	//Test2
+	state = new Piece*[64];
+	for(int i = 0; i < 8; i++){
+		for(int j = 0; j < 8; j++){
+			state[(i * 8) + j] = NULL;
+		}
+	}
+	state[(3 * 8) + 4] = new Piece((char*)"E4", false, bishop);
+	state[(4 * 8) + 5] = new Piece((char*)"F5", false, pawn);
+	state[(2 * 8) + 5] = new Piece((char*)"F3", true, pawn);
+	x = Board(state);
+	p = x.getPiece('E', 4 + '0');
+	x.updatePieceMoves(p);
+	correctNumMoves = 8;
+	correctMoves = new char[correctNumMoves * 2];
+	correctMoves = "D3C2B1F3D5C6B7A8";
+	for(int i = 0; i < correctNumMoves * 2; i++){
+		if(p->availableMoves[i] != correctMoves[i]){
+			printf("Failed on comparison %d, value should be %c but is %c \n", i, correctMoves[i], p->availableMoves[i]);
+			failed = true;
+		}
+	}
+	if(p->numMoves != correctNumMoves){
+		printf("Incorrect number of moves for Test 2\n");
+		failed = true;
+	}
+	return !failed;
+}
+
 int main(){
 	if(!initBoardTest()){
 		printf("initBoardTest Failed\n");
@@ -376,6 +431,9 @@ int main(){
 	}
 	if(!updateRookMovesTest()){
 		printf("updateRookMovesTest Failed\n");
+	}
+	if(!updateBishopMovesTest()){
+		printf("updateBishopMovesTest Failed\n");
 	}
 	printf("Finished tests\n");
 	return 0;

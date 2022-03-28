@@ -73,7 +73,7 @@ void Board::updatePieceMoves(Piece* p){
 
 	}
 	else if(type == bishop){
-
+		updateBishopMoves(p);
 	}
 	else if(type == king){
 
@@ -201,7 +201,7 @@ void Board::updateRookMoves(Piece *p){
 		p->numMoves++;
 		colOffset++;
 	}
-	if((int)col - 65 - colOffset > 0){
+	if((int)col - 65 - colOffset >= 0){
 		if(!isEmpty((char)((int)col - colOffset), (char)((int)row + rowOffset))){
 			if(getPiece((char)((int)col - colOffset), (char)((int)row + rowOffset))->isWhite() != p->isWhite()){
 				p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
@@ -238,10 +238,95 @@ void Board::updateRookMoves(Piece *p){
 		p->numMoves++;
 		rowOffset++;
 	}
-	if(((int)row - 49 - rowOffset > 0)){
+	if(((int)row - 49 - rowOffset >= 0)){
 		if(!isEmpty((char)((int)col + colOffset), (char)((int)row - rowOffset))){
 			if(getPiece((char)((int)col + colOffset), (char)((int)row - rowOffset))->isWhite() != p->isWhite()){
 				p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
+				p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
+				p->numMoves++;
+			}
+		}
+	}
+}
+
+void Board::updateBishopMoves(Piece *p){
+	char col = (int)p->getPosition()[0];
+	char row = (int)p->getPosition()[1];
+	int colOffset = 1;
+	int rowOffset = 1;
+	//printf("case 1\n");
+	while(isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset)) && ((int)col - 65 + colOffset < 8)){
+		//printf("Pos1: %c%c\n", (char)((int)col + colOffset), (char)((int)row + rowOffset));
+		p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
+		p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
+		p->numMoves++;
+		colOffset++;
+		rowOffset++;
+	}
+	if(((int)col - 65 + colOffset < 8) && ((int)row - 49 + rowOffset < 8)){
+		if(!isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset))){
+			if(getPiece((char)((int)col + colOffset), (char)((int)row + rowOffset))->isWhite() != p->isWhite()){
+				p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
+				p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
+				p->numMoves++;
+			}
+		}
+	}
+	colOffset = 1;
+	rowOffset = 1;
+	//printf("case 2\n");
+	while(((int)col - 65 - colOffset >= 0) && ((int)row - 49 - rowOffset >= 0) && isEmpty((char)((int)col - colOffset), (char)((int)row - rowOffset))){
+		//printf("Pos2: %c%c\n", (char)((int)col - colOffset), (char)((int)row + rowOffset));
+		p->availableMoves[p->numMoves * 2] = (char)(col - colOffset);
+		p->availableMoves[p->numMoves * 2 + 1] = (char)(row - rowOffset);
+		p->numMoves++;
+		colOffset++;
+		rowOffset++;
+	}
+	if(((int)col - 65 - colOffset >= 0) && ((int)row - 49 - rowOffset >= 0)){
+		if(!isEmpty((char)((int)col - colOffset), (char)((int)row - rowOffset))){
+			if(getPiece((char)((int)col - colOffset), (char)((int)row - rowOffset))->isWhite() != p->isWhite()){
+				p->availableMoves[p->numMoves * 2] = (char)(col - colOffset);
+				p->availableMoves[p->numMoves * 2 + 1] = (char)(row - rowOffset);
+				p->numMoves++;
+			}
+		}
+	}
+	colOffset = 1;
+	rowOffset = 1;
+	//printf("case 3\n");
+	while(((int)col - 65 + colOffset < 8) && ((int)row - 49 - rowOffset >= 0) && isEmpty((char)((int)col + colOffset), (char)((int)row - rowOffset))){
+		//printf("Pos3: %c%c\n", (char)((int)col + colOffset), (char)((int)row + rowOffset));
+		p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
+		p->availableMoves[p->numMoves * 2 + 1] = (char)(row - rowOffset);
+		p->numMoves++;
+		colOffset++;
+		rowOffset++;
+	}
+	if(((int)col - 65 + colOffset < 8) && ((int)row - 49 - rowOffset >= 0)){
+		if(!isEmpty((char)((int)col + colOffset), (char)((int)row - rowOffset))){
+			if(getPiece((char)((int)col + colOffset), (char)((int)row - rowOffset))->isWhite() != p->isWhite()){
+				p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
+				p->availableMoves[p->numMoves * 2 + 1] = (char)(row - rowOffset);
+				p->numMoves++;
+			}
+		}
+	}
+	colOffset = 1;
+	rowOffset = 1;
+	//printf("case 4\n");
+	while(((int)col - 65 - colOffset >= 0) && ((int)row - 49 + rowOffset < 8) && isEmpty((char)((int)col - colOffset), (char)((int)row + rowOffset))){
+		//printf("Pos4: %c%c\n", (char)((int)col + colOffset), (char)((int)row + rowOffset));
+		p->availableMoves[p->numMoves * 2] = (char)(col - colOffset);
+		p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
+		p->numMoves++;
+		colOffset++;
+		rowOffset++;
+	}
+	if(((int)col - 65 - colOffset >= 0) && ((int)row - 49 + rowOffset < 8)){
+		if(!isEmpty((char)((int)col - colOffset), (char)((int)row + rowOffset))){
+			if(getPiece((char)((int)col - colOffset), (char)((int)row + rowOffset))->isWhite() != p->isWhite()){
+				p->availableMoves[p->numMoves * 2] = (char)(col - colOffset);
 				p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
 				p->numMoves++;
 			}
