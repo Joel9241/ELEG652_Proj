@@ -175,9 +175,7 @@ void Board::updateRookMoves(Piece *p){
 	char row = (int)p->getPosition()[1];
 	int colOffset = 1;
 	int rowOffset = 0;
-	//printf("case 1\n");
 	while(isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset)) && ((int)col - 65 + colOffset < 8)){
-		//printf("Pos1: %c%c\n", (char)((int)col + colOffset), (char)((int)row + rowOffset));
 		p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
 		p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
 		p->numMoves++;
@@ -193,9 +191,7 @@ void Board::updateRookMoves(Piece *p){
 		}
 	}
 	colOffset = 1;
-	//printf("case 2\n");
 	while(isEmpty((char)((int)col - colOffset), (char)((int)row + rowOffset)) && ((int)col - 65 - colOffset >= 0)){
-		//printf("Pos2: %c%c\n", (char)((int)col - colOffset), (char)((int)row + rowOffset));
 		p->availableMoves[p->numMoves * 2] = (char)(col - colOffset);
 		p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
 		p->numMoves++;
@@ -212,9 +208,7 @@ void Board::updateRookMoves(Piece *p){
 	}
 	colOffset = 0;
 	rowOffset = 1;
-	//printf("case 3\n");
 	while(isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset)) && ((int)row - 49 + rowOffset < 8)){
-		//printf("Pos3: %c%c\n", (char)((int)col + colOffset), (char)((int)row + rowOffset));
 		p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
 		p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
 		p->numMoves++;
@@ -230,9 +224,7 @@ void Board::updateRookMoves(Piece *p){
 		}
 	}
 	rowOffset = 1;
-	//printf("case 4\n");
 	while(isEmpty((char)((int)col + colOffset), (char)((int)row - rowOffset)) && ((int)row - 49 - rowOffset >= 0)){
-		//printf("Pos4: %c%c\n", (char)((int)col + colOffset), (char)((int)row + rowOffset));
 		p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
 		p->availableMoves[p->numMoves * 2 + 1] = (char)(row - rowOffset);
 		p->numMoves++;
@@ -254,9 +246,7 @@ void Board::updateBishopMoves(Piece *p){
 	char row = (int)p->getPosition()[1];
 	int colOffset = 1;
 	int rowOffset = 1;
-	//printf("case 1\n");
 	while(isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset)) && ((int)col - 65 + colOffset < 8)){
-		//printf("Pos1: %c%c\n", (char)((int)col + colOffset), (char)((int)row + rowOffset));
 		p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
 		p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
 		p->numMoves++;
@@ -274,9 +264,7 @@ void Board::updateBishopMoves(Piece *p){
 	}
 	colOffset = 1;
 	rowOffset = 1;
-	//printf("case 2\n");
 	while(((int)col - 65 - colOffset >= 0) && ((int)row - 49 - rowOffset >= 0) && isEmpty((char)((int)col - colOffset), (char)((int)row - rowOffset))){
-		//printf("Pos2: %c%c\n", (char)((int)col - colOffset), (char)((int)row + rowOffset));
 		p->availableMoves[p->numMoves * 2] = (char)(col - colOffset);
 		p->availableMoves[p->numMoves * 2 + 1] = (char)(row - rowOffset);
 		p->numMoves++;
@@ -294,9 +282,7 @@ void Board::updateBishopMoves(Piece *p){
 	}
 	colOffset = 1;
 	rowOffset = 1;
-	//printf("case 3\n");
 	while(((int)col - 65 + colOffset < 8) && ((int)row - 49 - rowOffset >= 0) && isEmpty((char)((int)col + colOffset), (char)((int)row - rowOffset))){
-		//printf("Pos3: %c%c\n", (char)((int)col + colOffset), (char)((int)row + rowOffset));
 		p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
 		p->availableMoves[p->numMoves * 2 + 1] = (char)(row - rowOffset);
 		p->numMoves++;
@@ -314,9 +300,7 @@ void Board::updateBishopMoves(Piece *p){
 	}
 	colOffset = 1;
 	rowOffset = 1;
-	//printf("case 4\n");
 	while(((int)col - 65 - colOffset >= 0) && ((int)row - 49 + rowOffset < 8) && isEmpty((char)((int)col - colOffset), (char)((int)row + rowOffset))){
-		//printf("Pos4: %c%c\n", (char)((int)col + colOffset), (char)((int)row + rowOffset));
 		p->availableMoves[p->numMoves * 2] = (char)(col - colOffset);
 		p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
 		p->numMoves++;
