@@ -312,7 +312,33 @@ bool updateRookMovesTest(){
 		printf("Incorrect number of moves for Test 3\n");
 		failed = true;
 	}
+	return !failed;
+}
 
+bool updateKnightMovesTest(){
+	bool failed = false;
+	//Test 1
+	int numPieces = 2;
+	Piece** pieces = new Piece*[numPieces];
+	pieces[0] = new Piece((char*)"C5", true, knight);
+	pieces[1] = new Piece((char*)"D7", false, knight);
+	Piece* tpiece = pieces[0];
+	int correctNumMoves = 8;
+	char *correctMoves = new char[correctNumMoves * 2];
+	correctMoves = "D7B7D3B3E6E4A6A4";
+	failed |= pieceMoveTest(pieces, numPieces, tpiece, correctMoves, correctNumMoves);
+	
+	//Test 2
+	numPieces = 2;
+	pieces = new Piece*[numPieces];
+	pieces[0] = new Piece((char*)"C5", true, knight);
+	pieces[1] = new Piece((char*)"D7", true, knight);
+	tpiece = pieces[0];
+	correctNumMoves = 7;
+	correctMoves = new char[correctNumMoves * 2];
+	correctMoves = "B7D3B3E6E4A6A4";
+	failed |= pieceMoveTest(pieces, numPieces, tpiece, correctMoves, correctNumMoves);
+	
 	return !failed;
 }
 
@@ -371,6 +397,33 @@ bool updateBishopMovesTest(){
 	return !failed;
 }
 
+bool updateQueenMovesTest(){
+	bool failed = false;
+	//Test 1
+	int numPieces = 2;
+	Piece** pieces = new Piece*[numPieces];
+	pieces[0] = new Piece((char*)"C5", true, queen);
+	pieces[1] = new Piece((char*)"A7", false, knight);
+	Piece* tpiece = pieces[0];
+	int correctNumMoves = 25;
+	char *correctMoves = new char[correctNumMoves * 2];
+	correctMoves = "D6E7F8B4A3D4E3F2G1B6A7D5E5F5G5H5B5A5C6C7C8C4C3C2C1";
+	failed |= pieceMoveTest(pieces, numPieces, tpiece, correctMoves, correctNumMoves);
+
+	//Test 2
+	numPieces = 2;
+	pieces = new Piece*[numPieces];
+	pieces[0] = new Piece((char*)"C5", true, queen);
+	pieces[1] = new Piece((char*)"A7", true, knight);
+	tpiece = pieces[0];
+	correctNumMoves = 24;
+	correctMoves = new char[correctNumMoves * 2];
+	correctMoves = "D6E7F8B4A3D4E3F2G1B6D5E5F5G5H5B5A5C6C7C8C4C3C2C1";
+	failed |= pieceMoveTest(pieces, numPieces, tpiece, correctMoves, correctNumMoves);
+	
+	return !failed;
+}
+
 int main(){
 	if(!initBoardTest()){
 		printf("initBoardTest Failed\n");
@@ -381,8 +434,14 @@ int main(){
 	if(!updateRookMovesTest()){
 		printf("updateRookMovesTest Failed\n");
 	}
+	if(!updateKnightMovesTest()){
+		printf("updateKnightMovesTest Failed\n");
+	}
 	if(!updateBishopMovesTest()){
 		printf("updateBishopMovesTest Failed\n");
+	}
+	if(!updateQueenMovesTest()){
+		printf("updateQueenMovesTest Failed\n");
 	}
 	printf("Finished tests\n");
 	return 0;

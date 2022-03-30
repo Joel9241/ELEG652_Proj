@@ -70,7 +70,7 @@ void Board::updatePieceMoves(Piece* p){
 		updateRookMoves(p);	
 	}
 	else if(type == knight){
-
+		updateKnightMoves(p);
 	}
 	else if(type == bishop){
 		updateBishopMoves(p);
@@ -79,9 +79,9 @@ void Board::updatePieceMoves(Piece* p){
 
 	}
 	else if(type == queen){
-
+		updateBishopMoves(p);
+		updateRookMoves(p);
 	}
-
 }
 
 void Board::updatePawnMoves(Piece* p){
@@ -116,7 +116,6 @@ void Board::updatePawnMoves(Piece* p){
 					p->numMoves++;
 				}
 			}
-		
 		}
 		if(column != 'A'){
 			if(!isEmpty((char)((int)column - 1), (char)((int)row + 1))){
@@ -156,7 +155,6 @@ void Board::updatePawnMoves(Piece* p){
 					p->numMoves++;
 				}
 			}
-		
 		}
 		if(column != 'A'){
 			if(!isEmpty((char)((int)column - 1), (char)((int)row - 1))){
@@ -241,12 +239,113 @@ void Board::updateRookMoves(Piece *p){
 	}
 }
 
+void Board::updateKnightMoves(Piece *p){
+	char col = (int)p->getPosition()[0];
+	char row = (int)p->getPosition()[1];
+	int colOffset = 1;
+	int rowOffset = 2;
+	if(((int)col - 65 + colOffset < 8) && ((int)row - 49 + rowOffset < 8) && isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset))){
+		p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
+		p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
+		p->numMoves++;
+	}
+	else if(getPiece((char)((int)col + colOffset), (char)((int)row + rowOffset))->isWhite() != p->isWhite()){
+		p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
+		p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
+		p->numMoves++;
+	}
+	colOffset = -1;
+	rowOffset = 2;
+	if(((int)col - 65 + colOffset >= 0) && ((int)row - 49 + rowOffset < 8) && isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset))){
+		p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
+		p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
+		p->numMoves++;
+	}
+	else if(getPiece((char)((int)col + colOffset), (char)((int)row + rowOffset))->isWhite() != p->isWhite()){
+		p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
+		p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
+		p->numMoves++;
+	}
+	colOffset = 1;
+	rowOffset = -2;
+	if(((int)col - 65 + colOffset < 8) && ((int)row - 49 + rowOffset >= 0) && isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset))){
+		p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
+		p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
+		p->numMoves++;
+	}
+	else if(getPiece((char)((int)col + colOffset), (char)((int)row + rowOffset))->isWhite() != p->isWhite()){
+		p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
+		p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
+		p->numMoves++;
+	}
+	colOffset = -1;
+	rowOffset = -2;
+	if(((int)col - 65 + colOffset >= 0) && ((int)row - 49 + rowOffset >= 0) && isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset))){
+		p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
+		p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
+		p->numMoves++;
+	}
+	else if(getPiece((char)((int)col + colOffset), (char)((int)row + rowOffset))->isWhite() != p->isWhite()){
+		p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
+		p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
+		p->numMoves++;
+	}
+	colOffset = 2;
+	rowOffset = 1;
+	if(((int)col - 65 + colOffset < 8) && ((int)row - 49 + rowOffset < 8) && isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset))){
+		p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
+		p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
+		p->numMoves++;
+	}
+	else if(getPiece((char)((int)col + colOffset), (char)((int)row + rowOffset))->isWhite() != p->isWhite()){
+		p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
+		p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
+		p->numMoves++;
+	}
+	colOffset = 2;
+	rowOffset = -1;
+	if(((int)col - 65 + colOffset < 8) && ((int)row - 49 + rowOffset >= 0) && isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset))){
+		p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
+		p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
+		p->numMoves++;
+	}
+	else if(getPiece((char)((int)col + colOffset), (char)((int)row + rowOffset))->isWhite() != p->isWhite()){
+		p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
+		p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
+		p->numMoves++;
+	}
+	colOffset = -2;
+	rowOffset = 1;
+	if(((int)col - 65 + colOffset >= 0) && ((int)row - 49 + rowOffset < 8) && isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset))){
+		p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
+		p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
+		p->numMoves++;
+	}
+	else if(getPiece((char)((int)col + colOffset), (char)((int)row + rowOffset))->isWhite() != p->isWhite()){
+		p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
+		p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
+		p->numMoves++;
+	}
+	colOffset = -2;
+	rowOffset = -1;
+	if(((int)col - 65 + colOffset >= 0) && ((int)row - 49 + rowOffset >= 0) && isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset))){
+		p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
+		p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
+		p->numMoves++;
+	}
+	else if(getPiece((char)((int)col + colOffset), (char)((int)row + rowOffset))->isWhite() != p->isWhite()){
+		p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
+		p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
+		p->numMoves++;
+	}
+}
+
 void Board::updateBishopMoves(Piece *p){
 	char col = (int)p->getPosition()[0];
 	char row = (int)p->getPosition()[1];
 	int colOffset = 1;
 	int rowOffset = 1;
-	while(isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset)) && ((int)col - 65 + colOffset < 8)){
+	while(((int)col - 65 + colOffset < 8) && ((int)row - 49 + rowOffset < 8) && isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset))){
 		p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
 		p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
 		p->numMoves++;
