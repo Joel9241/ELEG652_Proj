@@ -60,6 +60,12 @@ Piece* Board::getPiece(char col, char row){
 	return tiles[(((int) row - 49) * 8) + (((int) col) - 65)];
 }
 
+void Board::addMove(Piece *p, char col, char row){
+	p->availableMoves[(p->numMoves * 2)] = col;
+	p->availableMoves[(p->numMoves * 2) + 1] = row;
+	p->numMoves++;
+}
+
 //Don't forget to check for checks
 void Board::updatePieceMoves(Piece* p){
 	PieceType type = p->getType();
@@ -90,29 +96,29 @@ void Board::updatePawnMoves(Piece* p){
 	if(p->isWhite()){
 		if(row == '2'){
 			if(isEmpty(column, '3')){
-				p->addMove(column, '3');
+				addMove(p, column, '3');
 				if(isEmpty(column, '4')){
-					p->addMove(column, '4');
+					addMove(p, column, '4');
 				}
 			}
 		}
 		else{
 			if(isEmpty(column, (char) (((int)row) + 1))){
-				p->addMove(column, (char)(((int)row) + 1));
+				addMove(p, column, (char)(((int)row) + 1));
 			}
 
 		}
 		if(column != 'H'){
 			if(!isEmpty((char)((int)column + 1), (char)((int)row + 1))){
 				if(!getPiece((char)((int)column + 1), (char)((int)row + 1))->isWhite()){
-					p->addMove((char)((int)column + 1), (char)((int)row + 1));
+					addMove(p, (char)((int)column + 1), (char)((int)row + 1));
 				}
 			}
 		}
 		if(column != 'A'){
 			if(!isEmpty((char)((int)column - 1), (char)((int)row + 1))){
 				if(!getPiece((char)((int)column - 1), (char)((int)row + 1))->isWhite()){
-					p->addMove((char)((int)column - 1), (char)((int)row + 1));
+					addMove(p, (char)((int)column - 1), (char)((int)row + 1));
 				}
 			}
 		}
@@ -120,28 +126,28 @@ void Board::updatePawnMoves(Piece* p){
 	else{
 		if(row == '7'){
 			if(isEmpty(column, '6')){
-				p->addMove(column, '6');
+				addMove(p, column, '6');
 				if(isEmpty(column, '5')){
-					p->addMove(column, '5');
+					addMove(p, column, '5');
 				}
 			}
 		}
 		else{
 			if(isEmpty(column, (char) (((int)row) - 1))){
-				p->addMove(column, (char)(((int)row) - 1));
+				addMove(p, column, (char)(((int)row) - 1));
 			}
 		}
 		if(column != 'H'){
 			if(!isEmpty((char)((int)column + 1), (char)((int)row - 1))){
 				if(getPiece((char)((int)column + 1), (char)((int)row - 1))->isWhite()){
-					p->addMove((char)((int)column + 1), (char)((int)row - 1));
+					addMove(p, (char)((int)column + 1), (char)((int)row - 1));
 				}
 			}
 		}
 		if(column != 'A'){
 			if(!isEmpty((char)((int)column - 1), (char)((int)row - 1))){
 				if(getPiece((char)((int)column - 1), (char)((int)row - 1))->isWhite()){
-					p->addMove((char)((int)column - 1), (char)((int)row - 1));
+					addMove(p, (char)((int)column - 1), (char)((int)row - 1));
 				}
 			}
 		}
@@ -154,50 +160,50 @@ void Board::updateRookMoves(Piece *p){
 	int colOffset = 1;
 	int rowOffset = 0;
 	while(isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset)) && ((int)col - 65 + colOffset < 8)){
-		p->addMove((char)(col + colOffset), (char)(row + rowOffset));
+		addMove(p, (char)(col + colOffset), (char)(row + rowOffset));
 		colOffset++;
 	}
 	if((int)col - 65 + colOffset < 8){
 		if(!isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset))){
 			if(getPiece((char)((int)col + colOffset), (char)((int)row + rowOffset))->isWhite() != p->isWhite()){
-				p->addMove((char)(col + colOffset), (char)(row + rowOffset));
+				addMove(p, (char)(col + colOffset), (char)(row + rowOffset));
 			}
 		}
 	}
 	colOffset = 1;
 	while(isEmpty((char)((int)col - colOffset), (char)((int)row + rowOffset)) && ((int)col - 65 - colOffset >= 0)){
-		p->addMove((char)(col - colOffset), (char)(row + rowOffset));
+		addMove(p, (char)(col - colOffset), (char)(row + rowOffset));
 		colOffset++;
 	}
 	if((int)col - 65 - colOffset >= 0){
 		if(!isEmpty((char)((int)col - colOffset), (char)((int)row + rowOffset))){
 			if(getPiece((char)((int)col - colOffset), (char)((int)row + rowOffset))->isWhite() != p->isWhite()){
-				p->addMove((char)(col - colOffset), (char)(row + rowOffset));
+				addMove(p, (char)(col - colOffset), (char)(row + rowOffset));
 			}
 		}
 	}
 	colOffset = 0;
 	rowOffset = 1;
 	while(isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset)) && ((int)row - 49 + rowOffset < 8)){
-		p->addMove((char)(col + colOffset), (char)(row + rowOffset));
+		addMove(p, (char)(col + colOffset), (char)(row + rowOffset));
 		rowOffset++;
 	}
 	if(((int)row - 49 + rowOffset < 8)){
 		if(!isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset))){
 			if(getPiece((char)((int)col + colOffset), (char)((int)row + rowOffset))->isWhite() != p->isWhite()){
-				p->addMove((char)(col + colOffset), (char)(row + rowOffset));
+				addMove(p, (char)(col + colOffset), (char)(row + rowOffset));
 			}
 		}
 	}
 	rowOffset = 1;
 	while(isEmpty((char)((int)col + colOffset), (char)((int)row - rowOffset)) && ((int)row - 49 - rowOffset >= 0)){
-		p->addMove((char)(col + colOffset), (char)(row - rowOffset));
+		addMove(p, (char)(col + colOffset), (char)(row - rowOffset));
 		rowOffset++;
 	}
 	if(((int)row - 49 - rowOffset >= 0)){
 		if(!isEmpty((char)((int)col + colOffset), (char)((int)row - rowOffset))){
 			if(getPiece((char)((int)col + colOffset), (char)((int)row - rowOffset))->isWhite() != p->isWhite()){
-				p->addMove((char)(col + colOffset), (char)(row - rowOffset));
+				addMove(p, (char)(col + colOffset), (char)(row - rowOffset));
 			}
 		}
 	}
@@ -219,10 +225,10 @@ void Board::updateKnightMoves(Piece *p){
 		irow = (int)row - 49 + rowOffset;
 		if((icol < 8) && (icol >= 0) && (irow < 8) && (irow >= 0)){
 			if(isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset))){
-				p->addMove((char)(col + colOffset), (char)(row + rowOffset));
+				addMove(p, (char)(col + colOffset), (char)(row + rowOffset));
 			}
 			else if(getPiece((char)((int)col + colOffset), (char)((int)row + rowOffset))->isWhite() != p->isWhite()){
-				p->addMove((char)(col + colOffset), (char)(row + rowOffset));
+				addMove(p, (char)(col + colOffset), (char)(row + rowOffset));
 			}
 		}
 	}
@@ -234,56 +240,56 @@ void Board::updateBishopMoves(Piece *p){
 	int colOffset = 1;
 	int rowOffset = 1;
 	while(((int)col - 65 + colOffset < 8) && ((int)row - 49 + rowOffset < 8) && isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset))){
-		p->addMove((char)(col + colOffset), (char)(row + rowOffset));
+		addMove(p, (char)(col + colOffset), (char)(row + rowOffset));
 		colOffset++;
 		rowOffset++;
 	}
 	if(((int)col - 65 + colOffset < 8) && ((int)row - 49 + rowOffset < 8)){
 		if(!isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset))){
 			if(getPiece((char)((int)col + colOffset), (char)((int)row + rowOffset))->isWhite() != p->isWhite()){
-				p->addMove((char)(col + colOffset), (char)(row + rowOffset));
+				addMove(p, (char)(col + colOffset), (char)(row + rowOffset));
 			}
 		}
 	}
 	colOffset = 1;
 	rowOffset = 1;
 	while(((int)col - 65 - colOffset >= 0) && ((int)row - 49 - rowOffset >= 0) && isEmpty((char)((int)col - colOffset), (char)((int)row - rowOffset))){
-		p->addMove((char)(col - colOffset), (char)(row - rowOffset));
+		addMove(p, (char)(col - colOffset), (char)(row - rowOffset));
 		colOffset++;
 		rowOffset++;
 	}
 	if(((int)col - 65 - colOffset >= 0) && ((int)row - 49 - rowOffset >= 0)){
 		if(!isEmpty((char)((int)col - colOffset), (char)((int)row - rowOffset))){
 			if(getPiece((char)((int)col - colOffset), (char)((int)row - rowOffset))->isWhite() != p->isWhite()){
-				p->addMove((char)(col - colOffset), (char)(row - rowOffset));
+				addMove(p, (char)(col - colOffset), (char)(row - rowOffset));
 			}
 		}
 	}
 	colOffset = 1;
 	rowOffset = 1;
 	while(((int)col - 65 + colOffset < 8) && ((int)row - 49 - rowOffset >= 0) && isEmpty((char)((int)col + colOffset), (char)((int)row - rowOffset))){
-		p->addMove((char)(col + colOffset), (char)(row - rowOffset));
+		addMove(p, (char)(col + colOffset), (char)(row - rowOffset));
 		colOffset++;
 		rowOffset++;
 	}
 	if(((int)col - 65 + colOffset < 8) && ((int)row - 49 - rowOffset >= 0)){
 		if(!isEmpty((char)((int)col + colOffset), (char)((int)row - rowOffset))){
 			if(getPiece((char)((int)col + colOffset), (char)((int)row - rowOffset))->isWhite() != p->isWhite()){
-				p->addMove((char)(col + colOffset), (char)(row - rowOffset));
+				addMove(p, (char)(col + colOffset), (char)(row - rowOffset));
 			}
 		}
 	}
 	colOffset = 1;
 	rowOffset = 1;
 	while(((int)col - 65 - colOffset >= 0) && ((int)row - 49 + rowOffset < 8) && isEmpty((char)((int)col - colOffset), (char)((int)row + rowOffset))){
-		p->addMove((char)(col - colOffset), (char)(row + rowOffset));
+		addMove(p, (char)(col - colOffset), (char)(row + rowOffset));
 		colOffset++;
 		rowOffset++;
 	}
 	if(((int)col - 65 - colOffset >= 0) && ((int)row - 49 + rowOffset < 8)){
 		if(!isEmpty((char)((int)col - colOffset), (char)((int)row + rowOffset))){
 			if(getPiece((char)((int)col - colOffset), (char)((int)row + rowOffset))->isWhite() != p->isWhite()){
-				p->addMove((char)(col - colOffset), (char)(row + rowOffset));
+				addMove(p, (char)(col - colOffset), (char)(row + rowOffset));
 			}
 		}
 	}
@@ -292,8 +298,6 @@ void Board::updateBishopMoves(Piece *p){
 void Board::updateKingMoves(Piece* p){
 	char col = (int)p->getPosition()[0];
 	char row = (int)p->getPosition()[1];
-	//int colOffsets[2] = {1, -1};
-	//int rowOffsets[2] = {0, 0};
 	int colOffsets[8] = {1, -1, 0, 0, 1, -1, -1, 1};
 	int rowOffsets[8] = {0, 0, 1, -1, 1, -1, 1, -1};
 	int colOffset;
@@ -308,27 +312,27 @@ void Board::updateKingMoves(Piece* p){
 		isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset));
 		if((icol < 8) && (icol >= 0) && (irow < 8) && (irow >= 0)){ 
 			if(isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset))){
-				p->addMove((char)(col + colOffset), (char)(row + rowOffset));
+				addMove(p, (char)(col + colOffset), (char)(row + rowOffset));
 			}
 			else if(getPiece((char)((int)col + colOffset), (char)((int)row + rowOffset))->isWhite() != p->isWhite()){
-				p->addMove((char)(col + colOffset), (char)(row + rowOffset));
+				addMove(p, (char)(col + colOffset), (char)(row + rowOffset));
 			}
 		}
 	}
 	if(p->isWhite() && !whiteKingMoved){
 		if(!whiteLeftRookMoved && isEmpty('B', '1') && isEmpty('C', '1') && isEmpty('D', '1')){
-			p->addMove('B', '1');
+			addMove(p, 'B', '1');
 		}
 		if(!whiteRightRookMoved && isEmpty('F', '1') && isEmpty('G', '1')){
-			p->addMove('G', '1');
+			addMove(p, 'G', '1');
 		}
 	}
 	else if(!p->isWhite() && !blackKingMoved){
 		if(!blackLeftRookMoved && isEmpty('B', '8') && isEmpty('C', '8') && isEmpty('D', '8')){
-			p->addMove('B', '8');
+			addMove(p, 'B', '8');
 		}
 		if(!whiteRightRookMoved && isEmpty('F', '8') && isEmpty('G', '8')){
-			p->addMove('G', '8');
+			addMove(p, 'G', '8');
 		}
 	}
 }

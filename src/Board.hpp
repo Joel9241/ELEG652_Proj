@@ -13,6 +13,7 @@ class Board{
 	Piece** tiles; //should be private here for testing purposes
 	bool isEmpty(char col, char row);
 	Piece* getPiece(char col, char row);
+	void addMove(Piece *p, char col, char row);
 	void updatePieceMoves(Piece *p);
 	void updatePawnMoves(Piece *p);
 	void updateRookMoves(Piece *p);
