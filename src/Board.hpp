@@ -20,4 +20,10 @@ class Board{
 	void updateBishopMoves(Piece *p);
 	void updateQueenMoves(Piece *p);
 	void updateKingMoves(Piece *p);
+	bool whiteKingMoved = false;
+	bool blackKingMoved = false;
+	bool whiteLeftRookMoved = false;
+	bool whiteRightRookMoved = false;
+	bool blackLeftRookMoved = false;
+	bool blackRightRookMoved = false;
 };

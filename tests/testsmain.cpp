@@ -424,6 +424,36 @@ bool updateQueenMovesTest(){
 	return !failed;
 }
 
+bool updateKingMovesTest(){
+	bool failed = false;
+	//Test 1
+	int numPieces = 3;
+	Piece** pieces = new Piece*[numPieces];
+	pieces[0] = new Piece((char*)"E1", true, king);
+	pieces[1] = new Piece((char*)"A1", true, rook);
+	pieces[2] = new Piece((char*)"H1", true, rook);
+	Piece* tpiece = pieces[0];
+	int correctNumMoves = 7;
+	char *correctMoves = new char[correctNumMoves * 2];
+	correctMoves = "F1D1E2F2D2B1G1";
+	failed |= pieceMoveTest(pieces, numPieces, tpiece, correctMoves, correctNumMoves);
+
+	//Test 2
+	numPieces = 2;
+	pieces = new Piece*[numPieces];
+	pieces[0] = new Piece((char*)"E8", false, king);
+	pieces[1] = new Piece((char*)"A8", false, rook);
+	pieces[2] = new Piece((char*)"H8", false, rook);
+	tpiece = pieces[0];
+	correctNumMoves = 7;
+	correctMoves = new char[correctNumMoves * 2];
+	correctMoves = "F8D8E7D7F7B8G8";
+	failed |= pieceMoveTest(pieces, numPieces, tpiece, correctMoves, correctNumMoves);
+	return !failed;
+}
+
+
+
 int main(){
 	if(!initBoardTest()){
 		printf("initBoardTest Failed\n");
@@ -442,6 +472,9 @@ int main(){
 	}
 	if(!updateQueenMovesTest()){
 		printf("updateQueenMovesTest Failed\n");
+	}
+	if(!updateKingMovesTest()){
+		printf("updateKingMovesTest Failed\n");
 	}
 	printf("Finished tests\n");
 	return 0;

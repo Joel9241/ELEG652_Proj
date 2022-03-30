@@ -38,6 +38,7 @@ PieceType Piece::getType(){
 }
 
 void Piece::addMove(char col, char row){
+	//Add if statement to see if move puts in check
 	availableMoves[(numMoves * 2)] = col;
 	availableMoves[(numMoves * 2) + 1] = row;
 	numMoves++;
