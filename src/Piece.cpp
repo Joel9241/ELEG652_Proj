@@ -37,3 +37,8 @@ PieceType Piece::getType(){
 	return type;
 }
 
+void Piece::addMove(char col, char row){
+	availableMoves[(numMoves * 2)] = col;
+	availableMoves[(numMoves * 2) + 1] = row;
+	numMoves++;
+}

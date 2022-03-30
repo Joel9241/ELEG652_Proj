@@ -19,4 +19,5 @@ class Piece{
 	bool isWhite();
 	PieceType getType();
 	int numMoves;
+	void addMove(char col, char row);
 };

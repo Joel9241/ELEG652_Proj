@@ -90,39 +90,29 @@ void Board::updatePawnMoves(Piece* p){
 	if(p->isWhite()){
 		if(row == '2'){
 			if(isEmpty(column, '3')){
-				p->availableMoves[(p->numMoves * 2)] = column;
-				p->availableMoves[(p->numMoves * 2) + 1] = '3';
-				p->numMoves++;
+				p->addMove(column, '3');
 				if(isEmpty(column, '4')){
-					p->availableMoves[(p->numMoves * 2)] = column;
-					p->availableMoves[(p->numMoves * 2) + 1] = '4';
-					p->numMoves++;
+					p->addMove(column, '4');
 				}
 			}
 		}
 		else{
 			if(isEmpty(column, (char) (((int)row) + 1))){
-				p->availableMoves[(p->numMoves * 2)] = column;
-				p->availableMoves[(p->numMoves * 2) + 1] = (char)(((int)row) + 1);
-				p->numMoves++;
+				p->addMove(column, (char)(((int)row) + 1));
 			}
 
 		}
 		if(column != 'H'){
 			if(!isEmpty((char)((int)column + 1), (char)((int)row + 1))){
 				if(!getPiece((char)((int)column + 1), (char)((int)row + 1))->isWhite()){
-					p->availableMoves[(p->numMoves * 2)] = (char)((int)column + 1);
-					p->availableMoves[(p->numMoves * 2) + 1] = (char)((int)row + 1);
-					p->numMoves++;
+					p->addMove((char)((int)column + 1), (char)((int)row + 1));
 				}
 			}
 		}
 		if(column != 'A'){
 			if(!isEmpty((char)((int)column - 1), (char)((int)row + 1))){
 				if(!getPiece((char)((int)column - 1), (char)((int)row + 1))->isWhite()){
-					p->availableMoves[(p->numMoves * 2)] = (char)((int)column - 1);
-					p->availableMoves[(p->numMoves * 2) + 1] = (char)((int)row + 1);
-					p->numMoves++;
+					p->addMove((char)((int)column - 1), (char)((int)row + 1));
 				}
 			}
 		}
@@ -130,38 +120,28 @@ void Board::updatePawnMoves(Piece* p){
 	else{
 		if(row == '7'){
 			if(isEmpty(column, '6')){
-				p->availableMoves[(p->numMoves * 2)] = column;
-				p->availableMoves[(p->numMoves * 2) + 1] = '6';
-				p->numMoves++;
+				p->addMove(column, '6');
 				if(isEmpty(column, '5')){
-					p->availableMoves[(p->numMoves * 2)] = column;
-					p->availableMoves[(p->numMoves * 2) + 1] = '5';
-					p->numMoves++;
+					p->addMove(column, '5');
 				}
 			}
 		}
 		else{
 			if(isEmpty(column, (char) (((int)row) - 1))){
-				p->availableMoves[(p->numMoves * 2)] = column;
-				p->availableMoves[(p->numMoves * 2) + 1] = (char)(((int)row) - 1);
-				p->numMoves++;
+				p->addMove(column, (char)(((int)row) - 1));
 			}
 		}
 		if(column != 'H'){
 			if(!isEmpty((char)((int)column + 1), (char)((int)row - 1))){
 				if(getPiece((char)((int)column + 1), (char)((int)row - 1))->isWhite()){
-					p->availableMoves[(p->numMoves * 2)] = (char)((int)column + 1);
-					p->availableMoves[(p->numMoves * 2) + 1] = (char)((int)row - 1);
-					p->numMoves++;
+					p->addMove((char)((int)column + 1), (char)((int)row - 1));
 				}
 			}
 		}
 		if(column != 'A'){
 			if(!isEmpty((char)((int)column - 1), (char)((int)row - 1))){
 				if(getPiece((char)((int)column - 1), (char)((int)row - 1))->isWhite()){
-					p->availableMoves[(p->numMoves * 2)] = (char)((int)column - 1);
-					p->availableMoves[(p->numMoves * 2) + 1] = (char)((int)row - 1);
-					p->numMoves++;
+					p->addMove((char)((int)column - 1), (char)((int)row - 1));
 				}
 			}
 		}
@@ -174,66 +154,50 @@ void Board::updateRookMoves(Piece *p){
 	int colOffset = 1;
 	int rowOffset = 0;
 	while(isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset)) && ((int)col - 65 + colOffset < 8)){
-		p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
-		p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
-		p->numMoves++;
+		p->addMove((char)(col + colOffset), (char)(row + rowOffset));
 		colOffset++;
 	}
 	if((int)col - 65 + colOffset < 8){
 		if(!isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset))){
 			if(getPiece((char)((int)col + colOffset), (char)((int)row + rowOffset))->isWhite() != p->isWhite()){
-				p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
-				p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
-				p->numMoves++;
+				p->addMove((char)(col + colOffset), (char)(row + rowOffset));
 			}
 		}
 	}
 	colOffset = 1;
 	while(isEmpty((char)((int)col - colOffset), (char)((int)row + rowOffset)) && ((int)col - 65 - colOffset >= 0)){
-		p->availableMoves[p->numMoves * 2] = (char)(col - colOffset);
-		p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
-		p->numMoves++;
+		p->addMove((char)(col - colOffset), (char)(row + rowOffset));
 		colOffset++;
 	}
 	if((int)col - 65 - colOffset >= 0){
 		if(!isEmpty((char)((int)col - colOffset), (char)((int)row + rowOffset))){
 			if(getPiece((char)((int)col - colOffset), (char)((int)row + rowOffset))->isWhite() != p->isWhite()){
-				p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
-				p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
-				p->numMoves++;
+				p->addMove((char)(col - colOffset), (char)(row + rowOffset));
 			}
 		}
 	}
 	colOffset = 0;
 	rowOffset = 1;
 	while(isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset)) && ((int)row - 49 + rowOffset < 8)){
-		p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
-		p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
-		p->numMoves++;
+		p->addMove((char)(col + colOffset), (char)(row + rowOffset));
 		rowOffset++;
 	}
 	if(((int)row - 49 + rowOffset < 8)){
 		if(!isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset))){
 			if(getPiece((char)((int)col + colOffset), (char)((int)row + rowOffset))->isWhite() != p->isWhite()){
-				p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
-				p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
-				p->numMoves++;
+				p->addMove((char)(col + colOffset), (char)(row + rowOffset));
 			}
 		}
 	}
 	rowOffset = 1;
 	while(isEmpty((char)((int)col + colOffset), (char)((int)row - rowOffset)) && ((int)row - 49 - rowOffset >= 0)){
-		p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
-		p->availableMoves[p->numMoves * 2 + 1] = (char)(row - rowOffset);
-		p->numMoves++;
+		p->addMove((char)(col + colOffset), (char)(row - rowOffset));
 		rowOffset++;
 	}
 	if(((int)row - 49 - rowOffset >= 0)){
 		if(!isEmpty((char)((int)col + colOffset), (char)((int)row - rowOffset))){
 			if(getPiece((char)((int)col + colOffset), (char)((int)row - rowOffset))->isWhite() != p->isWhite()){
-				p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
-				p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
-				p->numMoves++;
+				p->addMove((char)(col + colOffset), (char)(row - rowOffset));
 			}
 		}
 	}
@@ -242,101 +206,23 @@ void Board::updateRookMoves(Piece *p){
 void Board::updateKnightMoves(Piece *p){
 	char col = (int)p->getPosition()[0];
 	char row = (int)p->getPosition()[1];
-	int colOffset = 1;
-	int rowOffset = 2;
-	if(((int)col - 65 + colOffset < 8) && ((int)row - 49 + rowOffset < 8) && isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset))){
-		p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
-		p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
-		p->numMoves++;
-	}
-	else if(getPiece((char)((int)col + colOffset), (char)((int)row + rowOffset))->isWhite() != p->isWhite()){
-		p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
-		p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
-		p->numMoves++;
-	}
-	colOffset = -1;
-	rowOffset = 2;
-	if(((int)col - 65 + colOffset >= 0) && ((int)row - 49 + rowOffset < 8) && isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset))){
-		p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
-		p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
-		p->numMoves++;
-	}
-	else if(getPiece((char)((int)col + colOffset), (char)((int)row + rowOffset))->isWhite() != p->isWhite()){
-		p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
-		p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
-		p->numMoves++;
-	}
-	colOffset = 1;
-	rowOffset = -2;
-	if(((int)col - 65 + colOffset < 8) && ((int)row - 49 + rowOffset >= 0) && isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset))){
-		p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
-		p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
-		p->numMoves++;
-	}
-	else if(getPiece((char)((int)col + colOffset), (char)((int)row + rowOffset))->isWhite() != p->isWhite()){
-		p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
-		p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
-		p->numMoves++;
-	}
-	colOffset = -1;
-	rowOffset = -2;
-	if(((int)col - 65 + colOffset >= 0) && ((int)row - 49 + rowOffset >= 0) && isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset))){
-		p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
-		p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
-		p->numMoves++;
-	}
-	else if(getPiece((char)((int)col + colOffset), (char)((int)row + rowOffset))->isWhite() != p->isWhite()){
-		p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
-		p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
-		p->numMoves++;
-	}
-	colOffset = 2;
-	rowOffset = 1;
-	if(((int)col - 65 + colOffset < 8) && ((int)row - 49 + rowOffset < 8) && isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset))){
-		p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
-		p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
-		p->numMoves++;
-	}
-	else if(getPiece((char)((int)col + colOffset), (char)((int)row + rowOffset))->isWhite() != p->isWhite()){
-		p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
-		p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
-		p->numMoves++;
-	}
-	colOffset = 2;
-	rowOffset = -1;
-	if(((int)col - 65 + colOffset < 8) && ((int)row - 49 + rowOffset >= 0) && isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset))){
-		p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
-		p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
-		p->numMoves++;
-	}
-	else if(getPiece((char)((int)col + colOffset), (char)((int)row + rowOffset))->isWhite() != p->isWhite()){
-		p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
-		p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
-		p->numMoves++;
-	}
-	colOffset = -2;
-	rowOffset = 1;
-	if(((int)col - 65 + colOffset >= 0) && ((int)row - 49 + rowOffset < 8) && isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset))){
-		p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
-		p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
-		p->numMoves++;
-	}
-	else if(getPiece((char)((int)col + colOffset), (char)((int)row + rowOffset))->isWhite() != p->isWhite()){
-		p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
-		p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
-		p->numMoves++;
-	}
-	colOffset = -2;
-	rowOffset = -1;
-	if(((int)col - 65 + colOffset >= 0) && ((int)row - 49 + rowOffset >= 0) && isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset))){
-		p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
-		p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
-		p->numMoves++;
-	}
-	else if(getPiece((char)((int)col + colOffset), (char)((int)row + rowOffset))->isWhite() != p->isWhite()){
-		p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
-		p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
-		p->numMoves++;
+	int colOffsets[8] = {1, -1, 1, -1, 2, 2, -2, -2};
+	int rowOffsets[8] = {2, 2, -2, -2, 1, -1, 1, -1};
+	int colOffset;
+	int rowOffset;
+	int icol;
+	int irow;
+	for(int i = 0; i < 8; i++){
+		colOffset = colOffsets[i];
+		rowOffset = rowOffsets[i];
+		icol = (int)col - 65 + colOffset;
+		irow = (int)row - 49 + rowOffset;
+		if((icol < 8) && (icol >= 0) && (irow < 8) && (irow >= 0) && isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset))){
+			p->addMove((char)(col + colOffset), (char)(row + rowOffset));
+		}
+		else if(getPiece((char)((int)col + colOffset), (char)((int)row + rowOffset))->isWhite() != p->isWhite()){
+			p->addMove((char)(col + colOffset), (char)(row + rowOffset));
+		}
 	}
 }
 
@@ -346,72 +232,56 @@ void Board::updateBishopMoves(Piece *p){
 	int colOffset = 1;
 	int rowOffset = 1;
 	while(((int)col - 65 + colOffset < 8) && ((int)row - 49 + rowOffset < 8) && isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset))){
-		p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
-		p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
-		p->numMoves++;
+		p->addMove((char)(col + colOffset), (char)(row + rowOffset));
 		colOffset++;
 		rowOffset++;
 	}
 	if(((int)col - 65 + colOffset < 8) && ((int)row - 49 + rowOffset < 8)){
 		if(!isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset))){
 			if(getPiece((char)((int)col + colOffset), (char)((int)row + rowOffset))->isWhite() != p->isWhite()){
-				p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
-				p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
-				p->numMoves++;
+				p->addMove((char)(col + colOffset), (char)(row + rowOffset));
 			}
 		}
 	}
 	colOffset = 1;
 	rowOffset = 1;
 	while(((int)col - 65 - colOffset >= 0) && ((int)row - 49 - rowOffset >= 0) && isEmpty((char)((int)col - colOffset), (char)((int)row - rowOffset))){
-		p->availableMoves[p->numMoves * 2] = (char)(col - colOffset);
-		p->availableMoves[p->numMoves * 2 + 1] = (char)(row - rowOffset);
-		p->numMoves++;
+		p->addMove((char)(col - colOffset), (char)(row - rowOffset));
 		colOffset++;
 		rowOffset++;
 	}
 	if(((int)col - 65 - colOffset >= 0) && ((int)row - 49 - rowOffset >= 0)){
 		if(!isEmpty((char)((int)col - colOffset), (char)((int)row - rowOffset))){
 			if(getPiece((char)((int)col - colOffset), (char)((int)row - rowOffset))->isWhite() != p->isWhite()){
-				p->availableMoves[p->numMoves * 2] = (char)(col - colOffset);
-				p->availableMoves[p->numMoves * 2 + 1] = (char)(row - rowOffset);
-				p->numMoves++;
+				p->addMove((char)(col - colOffset), (char)(row - rowOffset));
 			}
 		}
 	}
 	colOffset = 1;
 	rowOffset = 1;
 	while(((int)col - 65 + colOffset < 8) && ((int)row - 49 - rowOffset >= 0) && isEmpty((char)((int)col + colOffset), (char)((int)row - rowOffset))){
-		p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
-		p->availableMoves[p->numMoves * 2 + 1] = (char)(row - rowOffset);
-		p->numMoves++;
+		p->addMove((char)(col + colOffset), (char)(row - rowOffset));
 		colOffset++;
 		rowOffset++;
 	}
 	if(((int)col - 65 + colOffset < 8) && ((int)row - 49 - rowOffset >= 0)){
 		if(!isEmpty((char)((int)col + colOffset), (char)((int)row - rowOffset))){
 			if(getPiece((char)((int)col + colOffset), (char)((int)row - rowOffset))->isWhite() != p->isWhite()){
-				p->availableMoves[p->numMoves * 2] = (char)(col + colOffset);
-				p->availableMoves[p->numMoves * 2 + 1] = (char)(row - rowOffset);
-				p->numMoves++;
+				p->addMove((char)(col + colOffset), (char)(row - rowOffset));
 			}
 		}
 	}
 	colOffset = 1;
 	rowOffset = 1;
 	while(((int)col - 65 - colOffset >= 0) && ((int)row - 49 + rowOffset < 8) && isEmpty((char)((int)col - colOffset), (char)((int)row + rowOffset))){
-		p->availableMoves[p->numMoves * 2] = (char)(col - colOffset);
-		p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
-		p->numMoves++;
+		p->addMove((char)(col - colOffset), (char)(row + rowOffset));
 		colOffset++;
 		rowOffset++;
 	}
 	if(((int)col - 65 - colOffset >= 0) && ((int)row - 49 + rowOffset < 8)){
 		if(!isEmpty((char)((int)col - colOffset), (char)((int)row + rowOffset))){
 			if(getPiece((char)((int)col - colOffset), (char)((int)row + rowOffset))->isWhite() != p->isWhite()){
-				p->availableMoves[p->numMoves * 2] = (char)(col - colOffset);
-				p->availableMoves[p->numMoves * 2 + 1] = (char)(row + rowOffset);
-				p->numMoves++;
+				p->addMove((char)(col - colOffset), (char)(row + rowOffset));
 			}
 		}
 	}
