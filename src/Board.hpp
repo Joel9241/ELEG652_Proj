@@ -10,10 +10,19 @@ class Board{
 	public:
 	Board();
 	Board(Piece** initState);
+	Board(Board* b);
 	Piece** tiles; //should be private here for testing purposes
+	Piece** whitePieces;
+	Piece** blackPieces;
+	int numWhitePieces = 0;
+	int numBlackPieces = 0;
+	Piece* whiteKing = NULL;
+	Piece* blackKing = NULL;;
+	int score = 0;
 	bool isEmpty(char col, char row);
 	Piece* getPiece(char col, char row);
 	void addMove(Piece *p, char col, char row);
+	Board *makeMove(Piece *p, char* loc);
 	void updatePieceMoves(Piece *p);
 	void updatePawnMoves(Piece *p);
 	void updateRookMoves(Piece *p);

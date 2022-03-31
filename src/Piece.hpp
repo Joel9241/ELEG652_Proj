@@ -8,11 +8,11 @@ enum PieceType{
 };
 
 class Piece{
-	char* position;
 	bool white;
-	PieceType type; 
 	static constexpr char cols[8] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'};
 	public:
+	char* position;
+	PieceType type; 
 	char* availableMoves;
 	Piece(char* position1, bool white1, PieceType type1);
 	char* getPosition();

@@ -6,6 +6,113 @@ Board::Board(){
 
 Board::Board(Piece** initState){
 	tiles = initState;
+	whitePieces = new Piece*[16];
+	blackPieces = new Piece*[16];
+	int wIndex = 0;
+	int bIndex = 0;
+	Piece *tmp;
+	int tmpScore;
+	for(int i = 0; i < 8; i++){
+		for(int j = 0; j < 8; j++){
+			if(!isEmpty(i + 65, j + 49)){
+				tmp = getPiece(i + 65, j + 49);	
+				PieceType type = tmp->getType();
+				if(type == pawn){
+					tmpScore = 1;
+				}
+				else if(type == rook){
+					tmpScore = 5;
+				}
+				else if(type == knight){
+					tmpScore = 3;
+				}
+				else if(type == bishop){
+					tmpScore = 3;
+				}
+				else if(type == king){
+					tmpScore = 999;
+				}
+				else if(type == queen){
+					tmpScore = 9;
+				}
+				if(tmp->isWhite()){
+					whitePieces[wIndex] = tmp;
+					wIndex++;
+					if(tmp->type == king){
+						whiteKing = tmp;
+					}
+				}
+				else{
+					tmpScore = tmpScore * -1;
+					blackPieces[bIndex] = tmp;
+					bIndex++;
+					if(tmp->type == king){
+						blackKing = tmp;
+					}
+				}
+			}
+		}
+	}
+	score += tmpScore;
+	numWhitePieces = wIndex;
+	numBlackPieces = bIndex;
+}
+
+Board::Board(Board* b){
+	tiles = new Piece*[64];
+	for(int i = 0; i < 64; i++){
+		tiles[i] = b->tiles[i];
+	}
+	whitePieces = new Piece*[16];
+	blackPieces = new Piece*[16];
+	int wIndex = 0;
+	int bIndex = 0;
+	Piece *tmp;
+	int tmpScore;
+	for(int i = 0; i < 8; i++){
+		for(int j = 0; j < 8; j++){
+			if(!isEmpty(i + 65, j + 49)){
+				tmp = getPiece(i + 65, j + 49);	
+				PieceType type = tmp->getType();
+				if(type == pawn){
+					tmpScore = 1;
+				}
+				else if(type == rook){
+					tmpScore = 5;
+				}
+				else if(type == knight){
+					tmpScore = 3;
+				}
+				else if(type == bishop){
+					tmpScore = 3;
+				}
+				else if(type == king){
+					tmpScore = 999;
+				}
+				else if(type == queen){
+					tmpScore = 9;
+				}
+				if(tmp->isWhite()){
+					whitePieces[wIndex] = tmp;
+					wIndex++;
+					if(tmp->type == king){
+						whiteKing = tmp;
+					}
+				}
+				else{
+					tmpScore = tmpScore * -1;
+					blackPieces[bIndex] = tmp;
+					bIndex++;
+					if(tmp->type == king){
+						blackKing = tmp;
+					}
+				}
+				score += tmpScore;
+			}
+		}
+	}
+	numWhitePieces = wIndex;
+	numBlackPieces = bIndex;
 }
 
 void Board::initBoard(){
@@ -47,6 +154,22 @@ void Board::initBoard(){
 			tiles[(i * 8) + j] = NULL;
 		}
 	}
+	whitePieces = new Piece*[16];
+	for(int i = 0; i < 8; i++){
+		for(int j = 0; j < 2; j++){
+			whitePieces[(j * 8) + i] = tiles[(j * 8) + i];
+		}
+	}
+	blackPieces = new Piece*[16];
+	for(int i = 0; i < 8; i++){
+		for(int j = 0; j < 2; j++){
+			blackPieces[(j * 8) + i] = tiles[((7 - j) * 8) + i];
+		}
+	}
+	whiteKing = tiles[(0 * 8) + 4];
+	blackKing = tiles[(7 * 8) + 4];
+	numWhitePieces = 16;
+	numBlackPieces = 16;
 }
 
 bool Board::isEmpty(char col, char row){
@@ -61,9 +184,105 @@ Piece* Board::getPiece(char col, char row){
 }
 
 void Board::addMove(Piece *p, char col, char row){
+	/*
+	Piece** pieces; 
+	int numPieces;
+	char* kingSpot;
+	if(p->isWhite()){
+		pieces = blackPieces;
+		numPieces = numBlackPieces;
+		if(whiteKing == NULL){
+			kingSpot = NULL;
+		}
+		else{
+			kingSpot = whiteKing->position;
+		}
+	}
+	else{
+		pieces = whitePieces;
+		numPieces = numWhitePieces;
+		if(blackKing == NULL){
+			kingSpot = NULL;
+		}
+		else{
+			kingSpot = blackKing->position;
+		}
+	}
+	printf("numPieces %d\n", numPieces);
+	printf("not null %s\n", kingSpot);
+	if(kingSpot != NULL){
+		Piece* tmpPiece;
+		char tmpPos[2];
+		for(int i = 0; i < numPieces; i++){
+			tmpPiece = pieces[i];
+			for(int j = 0; j < tmpPiece->numMoves; j++){
+				tmpPos[0] = tmpPiece->availableMoves[(j * 2)];
+				tmpPos[1] = tmpPiece->availableMoves[(j * 2) + 1];
+				printf("tmpPos %s\n", tmpPos);
+				if((tmpPos[0] == kingSpot[0]) && (tmpPos[1] == kingSpot[1])){
+					return;
+				}
+			}
+		}
+	}
+	*/
 	p->availableMoves[(p->numMoves * 2)] = col;
 	p->availableMoves[(p->numMoves * 2) + 1] = row;
 	p->numMoves++;
+}
+
+Board* Board::makeMove(Piece* p, char* loc){
+	Board* newBoard = new Board(this);
+	char* pos = p->getPosition();
+	char col = pos[0];
+	char row = pos[1];
+	Piece* newP = newBoard->getPiece(col, row);
+	if(isEmpty(loc[0], loc[1])){
+		newP->position = loc;
+	}
+	else{
+		//need to delete old piece and subtract it from score
+		Piece* del = newBoard->getPiece(loc[0], loc[1]);
+	}
+	Piece* tmp;
+	char* tmpPosition;
+	char* kingPosition;
+	if(newP->isWhite()){
+		for(int i = 0; i < newBoard->numWhitePieces; i++){
+			newBoard->updatePieceMoves(newBoard->whitePieces[i]);
+		}
+		for(int i = 0; i < newBoard->numBlackPieces; i++){
+			tmp = newBoard->blackPieces[i];
+			newBoard->updatePieceMoves(tmp);
+			for(int j = 0; j < tmp->numMoves; j++){
+				tmpPosition = tmp->getPosition();
+				kingPosition = newBoard->whiteKing->getPosition();
+				if((tmpPosition[0] == kingPosition[0]) && (tmpPosition[1] == kingPosition[1])){
+					newBoard->score = -99999;
+					return newBoard;
+				}
+			}
+		}
+
+	}
+	else{
+		for(int i = 0; i < newBoard->numWhitePieces; i++){
+			tmp = newBoard->whitePieces[i];
+			newBoard->updatePieceMoves(tmp);
+			for(int j = 0; j < tmp->numMoves; j++){
+				tmpPosition = tmp->getPosition();
+				kingPosition = newBoard->blackKing->getPosition();
+				if((tmpPosition[0] == kingPosition[0]) && (tmpPosition[1] == kingPosition[1])){
+					newBoard->score = 99999;
+				}
+			}
+		}
+		for(int i = 0; i < newBoard->numBlackPieces; i++){
+			newBoard->updatePieceMoves(newBoard->blackPieces[i]);
+			return newBoard;
+		}
+	}
+	return newBoard;
 }
 
 //Don't forget to check for checks

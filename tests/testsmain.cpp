@@ -452,7 +452,41 @@ bool updateKingMovesTest(){
 	return !failed;
 }
 
+bool checkTest(){
+	bool failed = false;
+	//Test 1
+	Piece** state = new Piece*[64];
+	for(int i = 0; i < 8; i++){
+		for(int j = 0; j < 8; j++){
+			state[(i * 8) + j] = NULL;
+		}
+	}
+	state[(1 * 8) + 4] = new Piece((char*)"E2", true, rook);
+	state[(0 * 8) + 4] = new Piece((char*)"E1", true, king);
+	state[(7 * 8) + 4] = new Piece((char*)"E8", false, rook);
+	Piece* tpiece = state[(1 * 8) + 4];
+	Board* x = new Board(state);
+	x->updatePieceMoves(tpiece);
+	Board* newBoard = new Board(x);
+	if(newBoard->score != 999){
+		printf("Incorrect score %d, should be 999\n", newBoard->score);
 
+	}
+	//Test 2
+	/*
+	numPieces = 2;
+	pieces = new Piece*[numPieces];
+	pieces[0] = new Piece((char*)"E8", false, king);
+	pieces[1] = new Piece((char*)"A8", false, rook);
+	pieces[2] = new Piece((char*)"H8", false, rook);
+	tpiece = pieces[0];
+	correctNumMoves = 7;
+	correctMoves = new char[correctNumMoves * 2];
+	correctMoves = "F8D8E7D7F7B8G8";
+	failed |= pieceMoveTest(pieces, numPieces, tpiece, correctMoves, correctNumMoves);
+	*/
+	return !failed;
+}
 
 int main(){
 	if(!initBoardTest()){
@@ -475,6 +509,9 @@ int main(){
 	}
 	if(!updateKingMovesTest()){
 		printf("updateKingMovesTest Failed\n");
+	}
+	if(!checkTest()){
+		printf("checkTestFailed");
 	}
 	printf("Finished tests\n");
 	return 0;
