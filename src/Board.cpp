@@ -184,48 +184,6 @@ Piece* Board::getPiece(char col, char row){
 }
 
 void Board::addMove(Piece *p, char col, char row){
-	/*
-	Piece** pieces; 
-	int numPieces;
-	char* kingSpot;
-	if(p->isWhite()){
-		pieces = blackPieces;
-		numPieces = numBlackPieces;
-		if(whiteKing == NULL){
-			kingSpot = NULL;
-		}
-		else{
-			kingSpot = whiteKing->position;
-		}
-	}
-	else{
-		pieces = whitePieces;
-		numPieces = numWhitePieces;
-		if(blackKing == NULL){
-			kingSpot = NULL;
-		}
-		else{
-			kingSpot = blackKing->position;
-		}
-	}
-	printf("numPieces %d\n", numPieces);
-	printf("not null %s\n", kingSpot);
-	if(kingSpot != NULL){
-		Piece* tmpPiece;
-		char tmpPos[2];
-		for(int i = 0; i < numPieces; i++){
-			tmpPiece = pieces[i];
-			for(int j = 0; j < tmpPiece->numMoves; j++){
-				tmpPos[0] = tmpPiece->availableMoves[(j * 2)];
-				tmpPos[1] = tmpPiece->availableMoves[(j * 2) + 1];
-				printf("tmpPos %s\n", tmpPos);
-				if((tmpPos[0] == kingSpot[0]) && (tmpPos[1] == kingSpot[1])){
-					return;
-				}
-			}
-		}
-	}
-	*/
 	p->availableMoves[(p->numMoves * 2)] = col;
 	p->availableMoves[(p->numMoves * 2) + 1] = row;
 	p->numMoves++;
