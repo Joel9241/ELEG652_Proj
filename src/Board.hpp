@@ -11,6 +11,7 @@ class Board{
 	Board();
 	Board(Piece** initState);
 	Board(Board* b);
+	Board** makeBoards();
 	Piece** tiles; //should be private here for testing purposes
 	Piece** whitePieces;
 	Piece** blackPieces;
@@ -36,4 +37,5 @@ class Board{
 	bool whiteRightRookMoved = false;
 	bool blackLeftRookMoved = false;
 	bool blackRightRookMoved = false;
+	void updateAllPieceMoves();
 };

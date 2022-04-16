@@ -488,6 +488,17 @@ bool checkTest(){
 	return !failed;
 }
 
+bool makeBoardsTest(){
+	bool failed = false;
+	Board* x = new Board();
+	Board** suc = x->makeBoards();
+	int i = 0;
+	while(suc[i] != NULL){
+		i += 1;
+	}
+	return !failed;
+}
+
 int main(){
 	if(!initBoardTest()){
 		printf("initBoardTest Failed\n");
@@ -511,7 +522,10 @@ int main(){
 		printf("updateKingMovesTest Failed\n");
 	}
 	if(!checkTest()){
-		printf("checkTestFailed");
+		printf("checkTestFailed\n");
+	}
+	if(!makeBoardsTest()){
+		printf("makeBoardsTest failed\n");
 	}
 	printf("Finished tests\n");
 	return 0;

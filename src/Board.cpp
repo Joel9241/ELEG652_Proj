@@ -1,7 +1,8 @@
 #include "Board.hpp"
 
 Board::Board(){
-	initBoard();	
+	initBoard();
+	updateAllPieceMoves();
 }
 
 Board::Board(Piece** initState){
@@ -60,8 +61,15 @@ Board::Board(Piece** initState){
 
 Board::Board(Board* b){
 	tiles = new Piece*[64];
+	//needs to make full copy of piece
 	for(int i = 0; i < 64; i++){
-		tiles[i] = b->tiles[i];
+		if(b->tiles[i] == NULL){
+			tiles[i] = NULL;
+		}
+		else{
+			tiles[i] = new Piece(b->tiles[i]);
+		}
+		//tiles[i] = b->tiles[i];
 	}
 	whitePieces = new Piece*[16];
 	blackPieces = new Piece*[16];
@@ -113,6 +121,48 @@ Board::Board(Board* b){
 	}
 	numWhitePieces = wIndex;
 	numBlackPieces = bIndex;
+}
+
+Board** Board::makeBoards(){
+	int numboards = 0;
+	for(int i = 0; i < numWhitePieces; i++){
+		numboards += whitePieces[i]->numMoves;
+	}
+	for(int i = 0; i < numBlackPieces; i++){
+		numboards += blackPieces[i]->numMoves;
+	}
+	Board** successors = new Board*[numboards + 1];
+	successors[numboards] = NULL;
+	int i = 0;
+	int wPieceIndex = 0;
+	int bPieceIndex = 0;
+	while(i < numboards){
+		int tmp;
+		if(wPieceIndex != numWhitePieces){
+			tmp = whitePieces[wPieceIndex]->numMoves;
+		}
+		else{
+			tmp = blackPieces[bPieceIndex]->numMoves;
+		}
+		int j = 0; 
+		while(j < tmp){
+			if(wPieceIndex != numWhitePieces){
+				successors[i] = makeMove(whitePieces[wPieceIndex], whitePieces[wPieceIndex]->getIthMove(j));
+			}
+			else{
+				successors[i] = makeMove(blackPieces[bPieceIndex], blackPieces[bPieceIndex]->getIthMove(j));
+			}
+			j += 1;
+			i += 1;
+		}
+		if(wPieceIndex != numWhitePieces){
+			wPieceIndex += 1;
+		}
+		else{
+			bPieceIndex += 1;	
+		}
+	}
+	return successors;
 }
 
 void Board::initBoard(){
@@ -189,6 +239,8 @@ void Board::addMove(Piece *p, char col, char row){
 	p->numMoves++;
 }
 
+
+//function does not work
 Board* Board::makeMove(Piece* p, char* loc){
 	Board* newBoard = new Board(this);
 	char* pos = p->getPosition();
@@ -196,15 +248,22 @@ Board* Board::makeMove(Piece* p, char* loc){
 	char row = pos[1];
 	Piece* newP = newBoard->getPiece(col, row);
 	if(isEmpty(loc[0], loc[1])){
-		newP->position = loc;
+		newP->position = new char[2];
+		newP->position[0] = col;
+		newP->position[1] = row;
 	}
 	else{
 		//need to delete old piece and subtract it from score
 		Piece* del = newBoard->getPiece(loc[0], loc[1]);
 	}
-	Piece* tmp;
-	char* tmpPosition;
-	char* kingPosition;
+	
+	//Piece* tmp;
+	//char* tmpPosition;
+	//char* kingPosition;
+	//should just be call to all updatePieceMoves
+	newBoard->updateAllPieceMoves();
+	return newBoard;
+	/*
 	if(newP->isWhite()){
 		for(int i = 0; i < newBoard->numWhitePieces; i++){
 			newBoard->updatePieceMoves(newBoard->whitePieces[i]);
@@ -232,6 +291,7 @@ Board* Board::makeMove(Piece* p, char* loc){
 				kingPosition = newBoard->blackKing->getPosition();
 				if((tmpPosition[0] == kingPosition[0]) && (tmpPosition[1] == kingPosition[1])){
 					newBoard->score = 99999;
+					return newBoard;
 				}
 			}
 		}
@@ -240,7 +300,17 @@ Board* Board::makeMove(Piece* p, char* loc){
 			return newBoard;
 		}
 	}
+	*/
 	return newBoard;
+}
+
+void Board::updateAllPieceMoves(){
+	for(int i = 0; i < numWhitePieces; i++){
+		updatePieceMoves(whitePieces[i]);
+	}
+	for(int i = 0; i < numBlackPieces; i++){
+		updatePieceMoves(blackPieces[i]);
+	}
 }
 
 //Don't forget to check for checks

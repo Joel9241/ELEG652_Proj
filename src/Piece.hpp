@@ -14,7 +14,9 @@ class Piece{
 	char* position;
 	PieceType type; 
 	char* availableMoves;
+	char* getIthMove(int i);
 	Piece(char* position1, bool white1, PieceType type1);
+	Piece(Piece* p);
 	char* getPosition();
 	bool isWhite();
 	PieceType getType();
