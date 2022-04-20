@@ -499,6 +499,103 @@ bool makeBoardsTest(){
 	return !failed;
 }
 
+bool takePieceTest(){
+	bool failed = false;
+	//Test1
+	Piece** state = new Piece*[64];
+	for(int i = 0; i < 8; i++){
+		for(int j = 0; j < 8; j++){
+			state[(i * 8) + j] = NULL;
+		}
+	}
+	state[(1 * 8) + 4] = new Piece((char*)"E2", true, rook);
+	state[(0 * 8) + 4] = new Piece((char*)"E1", false, rook);
+	state[(2 * 8) + 0] = new Piece((char*)"A3", true, pawn);
+	state[(3 * 8) + 0] = new Piece((char*)"A4", true, pawn);
+	state[(2 * 8) + 2] = new Piece((char*)"C3", false, pawn);
+	state[(3 * 8) + 2] = new Piece((char*)"C4", false, pawn);
+	Board* x = new Board(state);
+	x->updateAllPieceMoves();
+	Board** results = x->makeBoards();
+	Board* tmp = results[0];
+	int i = 0;
+	while(tmp != NULL){
+		if(tmp->numWhitePieces != 3){
+			failed |= strcmp(tmp->whitePieces[0]->getPosition(), "A3");
+			failed |= strcmp(tmp->whitePieces[1]->getPosition(), "A4");
+		}
+		else if(tmp->numBlackPieces != 3){
+			failed |= strcmp(tmp->blackPieces[0]->getPosition(), "C3");
+			failed |= strcmp(tmp->blackPieces[1]->getPosition(), "C4");
+		}
+		i++;
+		tmp = results[i];
+	}
+	
+	//Test 2
+	state = new Piece*[64];
+	for(int i = 0; i < 8; i++){
+		for(int j = 0; j < 8; j++){
+			state[(i * 8) + j] = NULL;
+		}
+	}
+	state[(2 * 8) + 0] = new Piece((char*)"A3", true, pawn);
+	state[(3 * 8) + 0] = new Piece((char*)"A4", true, pawn);
+	state[(1 * 8) + 4] = new Piece((char*)"E2", true, rook);
+	state[(0 * 8) + 4] = new Piece((char*)"E1", false, rook);
+	state[(2 * 8) + 2] = new Piece((char*)"C3", false, pawn);
+	state[(3 * 8) + 2] = new Piece((char*)"C4", false, pawn);
+	x = new Board(state);
+	x->updateAllPieceMoves();
+	results = x->makeBoards();
+	tmp = results[0];
+	i = 0;
+	while(tmp != NULL){
+		if(tmp->numWhitePieces != 3){
+			failed |= strcmp(tmp->whitePieces[0]->getPosition(), "A3");
+			failed |= strcmp(tmp->whitePieces[1]->getPosition(), "A4");
+		}
+		else if(tmp->numBlackPieces != 3){
+			failed |= strcmp(tmp->blackPieces[0]->getPosition(), "C3");
+			failed |= strcmp(tmp->blackPieces[1]->getPosition(), "C4");
+		}
+		i++;
+		tmp = results[i];
+	}
+	
+	//Test 3
+	state = new Piece*[64];
+	for(int i = 0; i < 8; i++){
+		for(int j = 0; j < 8; j++){
+			state[(i * 8) + j] = NULL;
+		}
+	}
+	state[(2 * 8) + 0] = new Piece((char*)"A3", true, pawn);
+	state[(3 * 8) + 0] = new Piece((char*)"A4", true, pawn);
+	state[(2 * 8) + 2] = new Piece((char*)"C3", false, pawn);
+	state[(3 * 8) + 2] = new Piece((char*)"C4", false, pawn);
+	state[(1 * 8) + 4] = new Piece((char*)"E2", true, rook);
+	state[(0 * 8) + 4] = new Piece((char*)"E1", false, rook);
+	x = new Board(state);
+	x->updateAllPieceMoves();
+	results = x->makeBoards();
+	tmp = results[0];
+	i = 0;
+	while(tmp != NULL){
+		if(tmp->numWhitePieces != 3){
+			failed |= strcmp(tmp->whitePieces[0]->getPosition(), "A3");
+			failed |= strcmp(tmp->whitePieces[1]->getPosition(), "A4");
+		}
+		else if(tmp->numBlackPieces != 3){
+			failed |= strcmp(tmp->blackPieces[0]->getPosition(), "C3");
+			failed |= strcmp(tmp->blackPieces[1]->getPosition(), "C4");
+		}
+		i++;
+		tmp = results[i];
+	}
+	return !failed;
+}
+
 int main(){
 	if(!initBoardTest()){
 		printf("initBoardTest Failed\n");
@@ -526,6 +623,9 @@ int main(){
 	}
 	if(!makeBoardsTest()){
 		printf("makeBoardsTest failed\n");
+	}
+	if(!takePieceTest()){
+		printf("takePieceTest failed\n");
 	}
 	printf("Finished tests\n");
 	return 0;

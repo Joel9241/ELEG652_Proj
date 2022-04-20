@@ -1,0 +1,4 @@
+*.exe
+obj/*
+src/*.swp
+tests/*.swp

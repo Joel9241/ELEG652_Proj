@@ -255,6 +255,28 @@ Board* Board::makeMove(Piece* p, char* loc){
 	else{
 		//need to delete old piece and subtract it from score
 		Piece* del = newBoard->getPiece(loc[0], loc[1]);
+		int delIndex;
+		int numPieces;
+		Piece** tmp;
+		if(del->isWhite()){
+			numPieces = numWhitePieces;
+			tmp = newBoard->whitePieces;
+			newBoard->numWhitePieces--;
+		}
+		else{
+			numPieces = numBlackPieces;
+			tmp = newBoard->blackPieces;
+			newBoard->numBlackPieces--;
+		}
+		for(int i = 0; i < numPieces; i++){
+			if(strcmp(del->getPosition(), tmp[i]->getPosition()) == 0){
+				delIndex = i;
+				break;
+			}
+		}
+		for(int i = delIndex; i < numPieces; i++){
+			tmp[i] = tmp[i + 1];
+		}
 	}
 	
 	//Piece* tmp;

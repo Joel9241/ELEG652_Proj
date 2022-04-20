@@ -2,6 +2,7 @@
 #include <cstddef>
 #include "Piece.hpp"
 #include <cstdio>
+#include <cstring>
 
 class Piece;
 
