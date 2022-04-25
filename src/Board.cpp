@@ -15,27 +15,9 @@ Board::Board(Piece** initState){
 	int tmpScore;
 	for(int i = 0; i < 8; i++){
 		for(int j = 0; j < 8; j++){
+			tmpScore = 1;
 			if(!isEmpty(i + 65, j + 49)){
 				tmp = getPiece(i + 65, j + 49);	
-				PieceType type = tmp->getType();
-				if(type == pawn){
-					tmpScore = 1;
-				}
-				else if(type == rook){
-					tmpScore = 5;
-				}
-				else if(type == knight){
-					tmpScore = 3;
-				}
-				else if(type == bishop){
-					tmpScore = 3;
-				}
-				else if(type == king){
-					tmpScore = 999;
-				}
-				else if(type == queen){
-					tmpScore = 9;
-				}
 				if(tmp->isWhite()){
 					whitePieces[wIndex] = tmp;
 					wIndex++;
@@ -44,17 +26,17 @@ Board::Board(Piece** initState){
 					}
 				}
 				else{
-					tmpScore = tmpScore * -1;
+					tmpScore = -1;
 					blackPieces[bIndex] = tmp;
 					bIndex++;
 					if(tmp->type == king){
 						blackKing = tmp;
 					}
 				}
+				score += tmpScore * tmp->value;
 			}
 		}
 	}
-	score += tmpScore;
 	numWhitePieces = wIndex;
 	numBlackPieces = bIndex;
 }
@@ -79,27 +61,9 @@ Board::Board(Board* b){
 	int tmpScore;
 	for(int i = 0; i < 8; i++){
 		for(int j = 0; j < 8; j++){
+			tmpScore = 1;
 			if(!isEmpty(i + 65, j + 49)){
 				tmp = getPiece(i + 65, j + 49);	
-				PieceType type = tmp->getType();
-				if(type == pawn){
-					tmpScore = 1;
-				}
-				else if(type == rook){
-					tmpScore = 5;
-				}
-				else if(type == knight){
-					tmpScore = 3;
-				}
-				else if(type == bishop){
-					tmpScore = 3;
-				}
-				else if(type == king){
-					tmpScore = 999;
-				}
-				else if(type == queen){
-					tmpScore = 9;
-				}
 				if(tmp->isWhite()){
 					whitePieces[wIndex] = tmp;
 					wIndex++;
@@ -108,14 +72,14 @@ Board::Board(Board* b){
 					}
 				}
 				else{
-					tmpScore = tmpScore * -1;
+					tmpScore = -1;
 					blackPieces[bIndex] = tmp;
 					bIndex++;
 					if(tmp->type == king){
 						blackKing = tmp;
 					}
 				}
-				score += tmpScore;
+				score += tmpScore * tmp->value;
 			}
 		}
 	}
@@ -216,6 +180,7 @@ void Board::initBoard(){
 			blackPieces[(j * 8) + i] = tiles[((7 - j) * 8) + i];
 		}
 	}
+	score = 0;
 	whiteKing = tiles[(0 * 8) + 4];
 	blackKing = tiles[(7 * 8) + 4];
 	numWhitePieces = 16;
@@ -253,15 +218,16 @@ Board* Board::makeMove(Piece* p, char* loc){
 		newP->position[1] = row;
 	}
 	else{
-		//need to delete old piece and subtract it from score
 		Piece* del = newBoard->getPiece(loc[0], loc[1]);
 		int delIndex;
 		int numPieces;
 		Piece** tmp;
+		int tmpScore = 1;
 		if(del->isWhite()){
 			numPieces = numWhitePieces;
 			tmp = newBoard->whitePieces;
 			newBoard->numWhitePieces--;
+			tmpScore = -1;
 		}
 		else{
 			numPieces = numBlackPieces;
@@ -277,6 +243,7 @@ Board* Board::makeMove(Piece* p, char* loc){
 		for(int i = delIndex; i < numPieces; i++){
 			tmp[i] = tmp[i + 1];
 		}
+		newBoard->score += (tmpScore * del->value);
 	}
 	
 	//Piece* tmp;

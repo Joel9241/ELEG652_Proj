@@ -21,4 +21,5 @@ class Piece{
 	bool isWhite();
 	PieceType getType();
 	int numMoves;
+	int value;
 };

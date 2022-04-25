@@ -499,6 +499,7 @@ bool makeBoardsTest(){
 	return !failed;
 }
 
+//Add functionality/check for score adjustments
 bool takePieceTest(){
 	bool failed = false;
 	//Test1
@@ -523,10 +524,12 @@ bool takePieceTest(){
 		if(tmp->numWhitePieces != 3){
 			failed |= strcmp(tmp->whitePieces[0]->getPosition(), "A3");
 			failed |= strcmp(tmp->whitePieces[1]->getPosition(), "A4");
+			failed |= (tmp->score != -5);
 		}
 		else if(tmp->numBlackPieces != 3){
 			failed |= strcmp(tmp->blackPieces[0]->getPosition(), "C3");
 			failed |= strcmp(tmp->blackPieces[1]->getPosition(), "C4");
+			failed |= (tmp->score != 5);
 		}
 		i++;
 		tmp = results[i];
@@ -554,10 +557,12 @@ bool takePieceTest(){
 		if(tmp->numWhitePieces != 3){
 			failed |= strcmp(tmp->whitePieces[0]->getPosition(), "A3");
 			failed |= strcmp(tmp->whitePieces[1]->getPosition(), "A4");
+			failed |= (tmp->score != -5);
 		}
 		else if(tmp->numBlackPieces != 3){
 			failed |= strcmp(tmp->blackPieces[0]->getPosition(), "C3");
 			failed |= strcmp(tmp->blackPieces[1]->getPosition(), "C4");
+			failed |= (tmp->score != 5);
 		}
 		i++;
 		tmp = results[i];
@@ -585,10 +590,12 @@ bool takePieceTest(){
 		if(tmp->numWhitePieces != 3){
 			failed |= strcmp(tmp->whitePieces[0]->getPosition(), "A3");
 			failed |= strcmp(tmp->whitePieces[1]->getPosition(), "A4");
+			failed |= (tmp->score != -5);
 		}
 		else if(tmp->numBlackPieces != 3){
 			failed |= strcmp(tmp->blackPieces[0]->getPosition(), "C3");
 			failed |= strcmp(tmp->blackPieces[1]->getPosition(), "C4");
+			failed |= (tmp->score != 5);
 		}
 		i++;
 		tmp = results[i];
