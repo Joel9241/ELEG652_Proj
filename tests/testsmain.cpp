@@ -494,6 +494,8 @@ bool makeBoardsTest(){
 	Board** suc = x->makeBoards();
 	int i = 0;
 	while(suc[i] != NULL){
+		//suc[i]->printBoard();
+		//printf("\n");
 		i += 1;
 	}
 	return !failed;
@@ -603,7 +605,45 @@ bool takePieceTest(){
 	return !failed;
 }
 
+bool puzzle1Test(){
+	bool failed = false;
+	Piece** state = new Piece*[64];
+	for(int i = 0; i < 8; i++){
+		for(int j = 0; j < 8; j++){
+			state[(i * 8) + j] = NULL;
+		}
+	}
+	state[(7 * 8) + 7] = new Piece((char*)"H8", false, king);
+	state[(6 * 8) + 6] = new Piece((char*)"G7", false, pawn);
+	state[(6 * 8) + 7] = new Piece((char*)"H7", false, pawn);
+	state[(7 * 8) + 4] = new Piece((char*)"E8", false, rook);
+	state[(5 * 8) + 7] = new Piece((char*)"H6", true, knight); //something off with this piece
+	state[(4 * 8) + 3] = new Piece((char*)"D5", true, queen);
+	state[(1 * 8) + 5] = new Piece((char*)"F2", true, pawn);
+	state[(1 * 8) + 6] = new Piece((char*)"G2", true, pawn);
+	state[(1 * 8) + 7] = new Piece((char*)"H2", true, pawn);
+	state[(0 * 8) + 5] = new Piece((char*)"F1", true, rook);
+	state[(0 * 8) + 6] = new Piece((char*)"G1", true, king);
+	Board* x = new Board(state);
+	//x->printBoard();
+	x->updateAllPieceMoves();
+	printf("Here I am pre\n");
+	/*
+	for(int i = 0; i < x->numWhitePieces; i++){
+		printf("pos %s\n", x->whitePieces[i]->getPosition());
+	}
+	*/
+	printf("start state\n");
+	x->printBoard();
+	x = x->pickSuccessor();
+	printf("best successor\n");
+	x->printBoard();
+	printf("Here I am post\n");
+	return !failed;
+}
+
 int main(){
+	/*
 	if(!initBoardTest()){
 		printf("initBoardTest Failed\n");
 	}
@@ -633,6 +673,10 @@ int main(){
 	}
 	if(!takePieceTest()){
 		printf("takePieceTest failed\n");
+	}
+	*/
+	if(!puzzle1Test()){
+		printf("Failed Puzzle 1\n");
 	}
 	printf("Finished tests\n");
 	return 0;

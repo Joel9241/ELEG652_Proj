@@ -12,8 +12,10 @@ class Board{
 	Board();
 	Board(Piece** initState);
 	Board(Board* b);
+	int getScore();
+	Board* pickSuccessor();
 	Board** makeBoards();
-	Piece** tiles; //should be private here for testing purposes
+	Piece** tiles; 
 	Piece** whitePieces;
 	Piece** blackPieces;
 	int numWhitePieces = 0;
@@ -21,6 +23,8 @@ class Board{
 	Piece* whiteKing = NULL;
 	Piece* blackKing = NULL;;
 	int score = 0;
+	bool whiteTurn = true;
+	int depth;
 	bool isEmpty(char col, char row);
 	Piece* getPiece(char col, char row);
 	void addMove(Piece *p, char col, char row);
@@ -39,4 +43,5 @@ class Board{
 	bool blackLeftRookMoved = false;
 	bool blackRightRookMoved = false;
 	void updateAllPieceMoves();
+	void printBoard();
 };

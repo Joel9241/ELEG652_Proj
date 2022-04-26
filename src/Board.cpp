@@ -39,6 +39,7 @@ Board::Board(Piece** initState){
 	}
 	numWhitePieces = wIndex;
 	numBlackPieces = bIndex;
+	depth = 0;
 }
 
 Board::Board(Board* b){
@@ -49,7 +50,9 @@ Board::Board(Board* b){
 			tiles[i] = NULL;
 		}
 		else{
-			tiles[i] = new Piece(b->tiles[i]);
+			tiles[i] = NULL;
+			//tiles[i] = new Piece(b->tiles[i]); //something doesn't work with this call in certain situations
+			tiles[i] = new Piece(b->tiles[i]->getPosition(), b->tiles[i]->isWhite(), b->tiles[i]->getType());
 		}
 		//tiles[i] = b->tiles[i];
 	}
@@ -83,14 +86,81 @@ Board::Board(Board* b){
 			}
 		}
 	}
-	numWhitePieces = wIndex;
-	numBlackPieces = bIndex;
+	numWhitePieces = b->numWhitePieces;
+	numBlackPieces = b->numBlackPieces;
+	//numWhitePieces = wIndex;
+	//numBlackPieces = bIndex;
+	depth = b->depth + 1;
+}
+
+int Board::getScore(){
+	//printf("in getScore\n");
+	//depth of 5 takes super long so for now putting as 3
+	if(depth == 3){
+		//printf("hit depth\n");
+		return score; 
+	}
+	//printf("depth less than 5 %d\n", depth);
+	//printf("premade Boards\n");
+	Board** choices = makeBoards(); //this makeBoards call seems to be breaking
+	//printf("made Boards\n");
+	int i = 1;
+	Board* successor = choices[0];
+	int bestScore = successor->getScore();
+	while(choices[i] != NULL){
+		int tmpScore = choices[i]->getScore();
+		if(whiteTurn){
+			if(tmpScore > bestScore){
+				successor = choices[i];
+				bestScore = tmpScore;
+			}
+		}
+		else{
+			if(tmpScore < bestScore){
+				successor = choices[i];
+				bestScore = tmpScore;
+			}
+		}
+		i++;
+	}
+	return bestScore;
+	//return 0;
+}
+
+Board* Board::pickSuccessor(){
+	Board** choices = makeBoards();
+	int i = 1;
+	//Board* successor = choices[0];
+	Board* successor = choices[2];
+	//printBoard();
+	//printf("successor difference\n");
+	//successor->printBoard();
+	int bestScore = successor->getScore();
+	while(choices[i] != NULL){
+		int tmpScore = choices[i]->getScore();
+		if(whiteTurn){
+			if(tmpScore > bestScore){
+				successor = choices[i];
+				bestScore = tmpScore;
+			}
+		}
+		else{
+			if(tmpScore < bestScore){
+				successor = choices[i];
+				bestScore = tmpScore;
+			}
+		}
+		i++;
+	}
+	return successor;
 }
 
 Board** Board::makeBoards(){
 	int numboards = 0;
 	for(int i = 0; i < numWhitePieces; i++){
 		numboards += whitePieces[i]->numMoves;
+		//printf("pos %d\n", whitePieces[i]->isWhite());
+		//printf("numMoves1 %d pos %s\n", whitePieces[i]->numMoves, whitePieces[i]->getPosition());
 	}
 	for(int i = 0; i < numBlackPieces; i++){
 		numboards += blackPieces[i]->numMoves;
@@ -185,6 +255,7 @@ void Board::initBoard(){
 	blackKing = tiles[(7 * 8) + 4];
 	numWhitePieces = 16;
 	numBlackPieces = 16;
+	depth = 0;
 }
 
 bool Board::isEmpty(char col, char row){
@@ -212,12 +283,7 @@ Board* Board::makeMove(Piece* p, char* loc){
 	char col = pos[0];
 	char row = pos[1];
 	Piece* newP = newBoard->getPiece(col, row);
-	if(isEmpty(loc[0], loc[1])){
-		newP->position = new char[2];
-		newP->position[0] = col;
-		newP->position[1] = row;
-	}
-	else{
+	if(!isEmpty(loc[0], loc[1])){
 		Piece* del = newBoard->getPiece(loc[0], loc[1]);
 		int delIndex;
 		int numPieces;
@@ -245,11 +311,17 @@ Board* Board::makeMove(Piece* p, char* loc){
 		}
 		newBoard->score += (tmpScore * del->value);
 	}
-	
+	newP->position = new char[2];
+	newP->position[0] = loc[0];
+	newP->position[1] = loc[1];
+	newBoard->tiles[(((int) row - 49) * 8) + (((int) col) - 65)] = NULL;
+	newBoard->tiles[(((int) loc[1] - 49) * 8) + (((int) loc[0]) - 65)] = newP;
 	//Piece* tmp;
 	//char* tmpPosition;
 	//char* kingPosition;
 	//should just be call to all updatePieceMoves
+	newBoard->depth = depth + 1;
+	newBoard->whiteTurn = !whiteTurn;
 	newBoard->updateAllPieceMoves();
 	return newBoard;
 	/*
@@ -570,5 +642,37 @@ void Board::updateKingMoves(Piece* p){
 		if(!whiteRightRookMoved && isEmpty('F', '8') && isEmpty('G', '8')){
 			addMove(p, 'G', '8');
 		}
+	}
+}
+
+void Board::printBoard(){
+	for(int i = 7; i >= 0; i--){
+		for(int j = 0; j < 8; j++){
+			if(tiles[(i * 8) + j] == NULL){
+				printf(" ");
+			}
+			else{
+				PieceType type = tiles[(i * 8) + j]->getType();
+				if(type == pawn){
+					printf("P");
+				}
+				else if(type == rook){
+					printf("R");
+				}
+				else if(type == knight){
+					printf("N");
+				}
+				else if(type == bishop){
+					printf("B");
+				}
+				else if(type == king){
+					printf("K");
+				}
+				else if(type == queen){
+					printf("Q");
+				}
+			}
+		}
+		printf("\n");
 	}
 }
