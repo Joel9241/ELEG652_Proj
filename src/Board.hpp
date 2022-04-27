@@ -12,7 +12,7 @@ class Board{
 	Board();
 	Board(Piece** initState);
 	Board(Board* b);
-	int getScore();
+	int getScore(bool print);
 	Board* pickSuccessor();
 	Board** makeBoards();
 	Piece** tiles; 

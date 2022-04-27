@@ -91,7 +91,7 @@ Board::Board(Board* b){
 	depth = b->depth + 1;
 }
 
-int Board::getScore(){
+int Board::getScore(bool print){
 	if(depth == 2){
 		return score; 
 	}
@@ -101,9 +101,26 @@ int Board::getScore(){
 	}
 	int i = 1;
 	Board* successor = choices[0];
-	int bestScore = successor->getScore();
+	int bestScore = successor->getScore(false);
 	while(choices[i] != NULL){
-		int tmpScore = choices[i]->getScore();
+		int tmpScore = choices[i]->getScore(false);
+		/*
+		if(print){
+			printf("tmpScore %d wt %d\n", tmpScore, whiteTurn);
+			if(tmpScore == 3){
+				printf("pre rec call\n");
+				choices[i]->getScore(true);
+				printf("post rec call\n");
+
+				//printf("move %s\n", choices[i]->predMove);
+			}
+		}
+		*/
+		/*
+		if(strcmp(predMove, "G8") == 0){
+			printf("tmpScore %d\n", tmpScore);
+		}
+		*/
 		if(!whiteTurn){
 			if(tmpScore > bestScore){
 				successor = choices[i];
@@ -118,6 +135,11 @@ int Board::getScore(){
 		}
 		i++;
 	}
+	/*
+	if(print){
+		printf("tmpScore %d\n", bestScore);
+	}
+	*/
 	return bestScore;
 }
 
@@ -127,15 +149,19 @@ Board* Board::pickSuccessor(){
 	whiteTurn = !whiteTurn;
 	int i = 1;
 	Board* successor = choices[0];
-	if(choices[0] == NULL){
-		printf("what happened\n");
-	}
-	printf("pick successor color %d\n", whiteTurn);
-	int bestScore = successor->getScore();
-	printf("after first get score %d\n", whiteTurn);
+	int bestScore = successor->getScore(false);
 	while(choices[i] != NULL){
-		int tmpScore = choices[i]->getScore();
-		printf("i %d, predMove %s, score %d whiteTurn %d\n", i, choices[i]->predMove, tmpScore, choices[i]->whiteTurn);
+		int tmpScore;
+		/*
+		if(strcmp(choices[i]->predMove, "G8") == 0){
+			tmpScore = choices[i]->getScore(true);
+		}
+		else{
+			tmpScore = choices[i]->getScore(false);
+		}
+		*/
+		tmpScore = choices[i]->getScore(false);
+		//printf("i %d, predMove %s, score %d whiteTurn %d\n", i, choices[i]->predMove, tmpScore, choices[i]->whiteTurn);
 		if(whiteTurn){
 			if(tmpScore > bestScore){
 				successor = choices[i];
@@ -152,7 +178,6 @@ Board* Board::pickSuccessor(){
 	}
 	successor->whiteTurn = !whiteTurn;
 	successor->depth = 0;
-	printf("end pick\n\n");
 	return successor;
 }
 

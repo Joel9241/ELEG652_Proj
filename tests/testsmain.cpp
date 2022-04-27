@@ -668,6 +668,8 @@ bool puzzle1Test(){
 	state[(0 * 8) + 5] = new Piece((char*)"F1", true, rook);
 	state[(0 * 8) + 6] = new Piece((char*)"G1", true, king);
 	*/
+	
+	/*
 	state[(7 * 8) + 7] = new Piece((char*)"H8", false, king);
 	state[(6 * 8) + 6] = new Piece((char*)"G7", false, pawn);
 	state[(6 * 8) + 7] = new Piece((char*)"H7", false, pawn);
@@ -706,7 +708,6 @@ bool puzzle1Test(){
 	//x = x->pickSuccessor();
 	//x->printBoard();
 	//x->makeBoards()[14]->getScore();
-	/*
 	x = x->pickSuccessor();
 	printf("predMove %s\n", x->predMove);
 	printf("best successor\n");
@@ -715,6 +716,60 @@ bool puzzle1Test(){
 	printf("best successor2\n");
 	x->printBoard();
 	*/
+	
+	state[(7 * 8) + 7] = new Piece((char*)"H8", false, king);
+	state[(6 * 8) + 6] = new Piece((char*)"G7", false, pawn);
+	state[(6 * 8) + 7] = new Piece((char*)"H7", false, pawn);
+	state[(7 * 8) + 4] = new Piece((char*)"E8", false, rook);
+	state[(5 * 8) + 7] = new Piece((char*)"H6", true, knight);
+	state[(4 * 8) + 3] = new Piece((char*)"D5", true, queen);
+	state[(1 * 8) + 5] = new Piece((char*)"F2", true, pawn);
+	state[(1 * 8) + 6] = new Piece((char*)"G2", true, pawn);
+	state[(1 * 8) + 7] = new Piece((char*)"H2", true, pawn);
+	state[(0 * 8) + 5] = new Piece((char*)"F1", true, rook);
+	state[(0 * 8) + 6] = new Piece((char*)"G1", true, king);
+	
+	Board* x = new Board(state);
+	x->whiteTurn = true;
+	x->whiteKingMoved = true;
+	x->blackKingMoved = true;
+	x->updateAllPieceMoves();
+	x->printBoard();
+	x = x->pickSuccessor();
+	x->printBoard();
+	return !failed;
+}
+
+bool puzzle3Test(){
+	bool failed = false;
+	Piece** state = new Piece*[64];
+	for(int i = 0; i < 8; i++){
+		for(int j = 0; j < 8; j++){
+			state[(i * 8) + j] = NULL;
+		}
+	}
+	state[(7 * 8) + 7] = new Piece((char*)"H8", false, king);
+	state[(6 * 8) + 6] = new Piece((char*)"G7", false, pawn);
+	state[(6 * 8) + 7] = new Piece((char*)"H7", false, pawn);
+	state[(7 * 8) + 4] = new Piece((char*)"E8", false, rook);
+	state[(5 * 8) + 7] = new Piece((char*)"H6", true, knight);
+	state[(7 * 8) + 6] = new Piece((char*)"G8", true, queen);
+	state[(0 * 8) + 5] = new Piece((char*)"F1", true, rook);
+	state[(1 * 8) + 5] = new Piece((char*)"F2", true, pawn);
+	state[(1 * 8) + 6] = new Piece((char*)"G2", true, pawn);
+	state[(1 * 8) + 7] = new Piece((char*)"H2", true, pawn);
+	state[(0 * 8) + 6] = new Piece((char*)"G1", true, king);
+	Board* x = new Board(state);
+	x->whiteTurn = false;
+	x->whiteKingMoved = true;
+	x->blackKingMoved = true;
+	x->updateAllPieceMoves();
+	//x->printBoard();
+	x = x->pickSuccessor();
+	//x->printBoard();
+	if(strcmp(x->predMove, "G8") != 0){
+		failed = true;
+	}
 	return !failed;
 }
 
@@ -733,7 +788,9 @@ bool puzzle2Test(){
 	Board* x = new Board(state);
 	x->whiteTurn = true;
 	x->updateAllPieceMoves();
+	//x->printBoard();
 	x = x->pickSuccessor();
+	//x->printBoard();
 	if(strcmp(x->predMove, "A8") != 0){
 		failed = true;
 	}
@@ -741,7 +798,6 @@ bool puzzle2Test(){
 }
 
 int main(){
-	/*
 	if(!initBoardTest()){
 		printf("initBoardTest Failed\n");
 	}
@@ -772,12 +828,15 @@ int main(){
 	if(!takePieceTest()){
 		printf("takePieceTest failed\n");
 	}
-	*/
 	/*
 	if(!puzzle1Test()){
 		printf("Failed Puzzle 1\n");
 	}
+	printf("end of puzzle 1 \n");
 	*/
+	if(!puzzle3Test()){
+		printf("Failed Puzzle 3\n");
+	}
 	if(!puzzle2Test()){
 		printf("Failed Puzzle 2\n");
 	}
