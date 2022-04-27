@@ -50,7 +50,6 @@ Board::Board(Board* b){
 			tiles[i] = NULL;
 		}
 		else{
-			tiles[i] = NULL;
 			//tiles[i] = new Piece(b->tiles[i]); //something doesn't work with this call in certain situations
 			tiles[i] = new Piece(b->tiles[i]->getPosition(), b->tiles[i]->isWhite(), b->tiles[i]->getType());
 		}
@@ -61,10 +60,8 @@ Board::Board(Board* b){
 	int wIndex = 0;
 	int bIndex = 0;
 	Piece *tmp;
-	int tmpScore;
 	for(int i = 0; i < 8; i++){
 		for(int j = 0; j < 8; j++){
-			tmpScore = 1;
 			if(!isEmpty(i + 65, j + 49)){
 				tmp = getPiece(i + 65, j + 49);	
 				if(tmp->isWhite()){
@@ -75,31 +72,41 @@ Board::Board(Board* b){
 					}
 				}
 				else{
-					tmpScore = -1;
 					blackPieces[bIndex] = tmp;
 					bIndex++;
 					if(tmp->type == king){
 						blackKing = tmp;
 					}
 				}
-				score += tmpScore * tmp->value;
 			}
 		}
 	}
 	numWhitePieces = b->numWhitePieces;
 	numBlackPieces = b->numBlackPieces;
+	score = b->score;
 	//numWhitePieces = wIndex;
 	//numBlackPieces = bIndex;
+	whiteKingMoved = b->whiteKingMoved;
+	blackKingMoved = b->blackKingMoved;
 	depth = b->depth + 1;
 }
 
 int Board::getScore(){
-	//printf("in getScore\n");
 	//depth of 5 takes super long so for now putting as 3
-	if(depth == 3){
+	//printf("get score color %d\n", whiteTurn);
+	if(depth == 4){
 		//printf("hit depth\n");
 		return score; 
 	}
+	/*
+	if(whiteTurn && (score > 900)){
+		
+		return score;
+	}
+	if(!whiteTurn && (score < -900)){
+		return score;
+	}
+	*/
 	//printf("depth less than 5 %d\n", depth);
 	//printf("premade Boards\n");
 	Board** choices = makeBoards(); //this makeBoards call seems to be breaking
@@ -107,37 +114,67 @@ int Board::getScore(){
 	int i = 1;
 	Board* successor = choices[0];
 	int bestScore = successor->getScore();
+	if(strcmp(predMove, "H8") == 0){
+		//printf("wt %d whiteTurn %d\n", wt, whiteTurn);
+		//printf("F7 boardpre\n");
+		//printBoard();
+		//printf("F7 boardpost\n");
+	}
+	//printf("predMove %s wt %d depth %d\n", predMove, whiteTurn, depth);
+	//printf("getScore call\n");
 	while(choices[i] != NULL){
 		int tmpScore = choices[i]->getScore();
+		//printf("tmpScore %d wt!! %d depth %d\n", tmpScore, whiteTurn, depth);
+		//printf("getScore i %d, predMove %s, score %d\n", i, choices[i]->predMove, tmpScore);
+		//if(strcmp(predMove, "F7") == 0){
+		//printf("tmpScore %d bestScore %d\n", tmpScore, bestScore);
+		//}
 		if(whiteTurn){
 			if(tmpScore > bestScore){
+				//printf("reassign best score1\n");
 				successor = choices[i];
 				bestScore = tmpScore;
 			}
 		}
 		else{
 			if(tmpScore < bestScore){
+				//printf("reassign best score2\n");
 				successor = choices[i];
 				bestScore = tmpScore;
 			}
 		}
 		i++;
 	}
+	/*
+	if(strcmp(predMove, "H8") == 0){
+		if(bestScore < 1000){
+			printf("not 1000 h8 case\n");
+			printBoard();
+			printf("not 1000 h8 case\n");
+		}
+	}
+	printf("returned best score %d\n", bestScore);
+	*/
 	return bestScore;
 	//return 0;
 }
 
 Board* Board::pickSuccessor(){
+	whiteTurn = !whiteTurn;
 	Board** choices = makeBoards();
+	whiteTurn = !whiteTurn;
 	int i = 1;
 	//Board* successor = choices[0];
-	Board* successor = choices[2];
+	Board* successor = choices[0];
 	//printBoard();
 	//printf("successor difference\n");
 	//successor->printBoard();
+	printf("pick successor color %d\n", whiteTurn);
 	int bestScore = successor->getScore();
+	//printf("predMove %s\n", predMove);
 	while(choices[i] != NULL){
 		int tmpScore = choices[i]->getScore();
+		printf("i %d, predMove %s, score %d whiteTurn %d\n", i, choices[i]->predMove, tmpScore, choices[i]->whiteTurn);
 		if(whiteTurn){
 			if(tmpScore > bestScore){
 				successor = choices[i];
@@ -152,18 +189,26 @@ Board* Board::pickSuccessor(){
 		}
 		i++;
 	}
+	successor->whiteTurn = !whiteTurn;
+	successor->depth = 0;
+	printf("end pick\n\n");
 	return successor;
 }
 
 Board** Board::makeBoards(){
 	int numboards = 0;
-	for(int i = 0; i < numWhitePieces; i++){
-		numboards += whitePieces[i]->numMoves;
-		//printf("pos %d\n", whitePieces[i]->isWhite());
-		//printf("numMoves1 %d pos %s\n", whitePieces[i]->numMoves, whitePieces[i]->getPosition());
+	int numPieces;
+	Piece** p;
+	if(!whiteTurn){
+		numPieces = numWhitePieces;
+		p = whitePieces;
 	}
-	for(int i = 0; i < numBlackPieces; i++){
-		numboards += blackPieces[i]->numMoves;
+	else{
+		numPieces = numBlackPieces;
+		p = blackPieces;
+	}
+	for(int i = 0; i < numPieces; i++){
+		numboards += p[i]->numMoves;
 	}
 	Board** successors = new Board*[numboards + 1];
 	successors[numboards] = NULL;
@@ -172,7 +217,7 @@ Board** Board::makeBoards(){
 	int bPieceIndex = 0;
 	while(i < numboards){
 		int tmp;
-		if(wPieceIndex != numWhitePieces){
+		if(!whiteTurn){
 			tmp = whitePieces[wPieceIndex]->numMoves;
 		}
 		else{
@@ -180,7 +225,7 @@ Board** Board::makeBoards(){
 		}
 		int j = 0; 
 		while(j < tmp){
-			if(wPieceIndex != numWhitePieces){
+			if(!whiteTurn){
 				successors[i] = makeMove(whitePieces[wPieceIndex], whitePieces[wPieceIndex]->getIthMove(j));
 			}
 			else{
@@ -189,11 +234,11 @@ Board** Board::makeBoards(){
 			j += 1;
 			i += 1;
 		}
-		if(wPieceIndex != numWhitePieces){
-			wPieceIndex += 1;
+		if(!whiteTurn){
+			wPieceIndex++;
 		}
 		else{
-			bPieceIndex += 1;	
+			bPieceIndex++;
 		}
 	}
 	return successors;
@@ -279,6 +324,9 @@ void Board::addMove(Piece *p, char col, char row){
 //function does not work
 Board* Board::makeMove(Piece* p, char* loc){
 	Board* newBoard = new Board(this);
+	newBoard->predMove = new char[2];
+	newBoard->predMove[0] = loc[0];
+	newBoard->predMove[1] = loc[1];
 	char* pos = p->getPosition();
 	char col = pos[0];
 	char row = pos[1];

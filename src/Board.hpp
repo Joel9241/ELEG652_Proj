@@ -24,7 +24,8 @@ class Board{
 	Piece* blackKing = NULL;;
 	int score = 0;
 	bool whiteTurn = true;
-	int depth;
+	int depth = 0;
+	char* predMove;
 	bool isEmpty(char col, char row);
 	Piece* getPiece(char col, char row);
 	void addMove(Piece *p, char col, char row);

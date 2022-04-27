@@ -613,32 +613,108 @@ bool puzzle1Test(){
 			state[(i * 8) + j] = NULL;
 		}
 	}
+	//real state
+	/*
 	state[(7 * 8) + 7] = new Piece((char*)"H8", false, king);
 	state[(6 * 8) + 6] = new Piece((char*)"G7", false, pawn);
 	state[(6 * 8) + 7] = new Piece((char*)"H7", false, pawn);
 	state[(7 * 8) + 4] = new Piece((char*)"E8", false, rook);
-	state[(5 * 8) + 7] = new Piece((char*)"H6", true, knight); //something off with this piece
+	state[(5 * 8) + 7] = new Piece((char*)"H6", true, knight);
+	//state[(7 * 8) + 6] = new Piece((char*)"G8", true, queen);
 	state[(4 * 8) + 3] = new Piece((char*)"D5", true, queen);
 	state[(1 * 8) + 5] = new Piece((char*)"F2", true, pawn);
 	state[(1 * 8) + 6] = new Piece((char*)"G2", true, pawn);
 	state[(1 * 8) + 7] = new Piece((char*)"H2", true, pawn);
 	state[(0 * 8) + 5] = new Piece((char*)"F1", true, rook);
 	state[(0 * 8) + 6] = new Piece((char*)"G1", true, king);
-	Board* x = new Board(state);
-	//x->printBoard();
-	x->updateAllPieceMoves();
-	printf("Here I am pre\n");
-	/*
-	for(int i = 0; i < x->numWhitePieces; i++){
-		printf("pos %s\n", x->whitePieces[i]->getPosition());
-	}
 	*/
-	printf("start state\n");
+	//
+	/*blacks move to take back queen
+	state[(7 * 8) + 7] = new Piece((char*)"H8", false, king);
+	state[(6 * 8) + 6] = new Piece((char*)"G7", false, pawn);
+	state[(6 * 8) + 7] = new Piece((char*)"H7", false, pawn);
+	state[(7 * 8) + 4] = new Piece((char*)"E8", false, rook);
+	state[(5 * 8) + 7] = new Piece((char*)"H6", true, knight);
+	state[(7 * 8) + 6] = new Piece((char*)"G8", true, queen);
+	state[(1 * 8) + 5] = new Piece((char*)"F2", true, pawn);
+	state[(1 * 8) + 6] = new Piece((char*)"G2", true, pawn);
+	state[(1 * 8) + 7] = new Piece((char*)"H2", true, pawn);
+	state[(0 * 8) + 5] = new Piece((char*)"F1", true, rook);
+	state[(0 * 8) + 6] = new Piece((char*)"G1", true, king);
+	*/
+	//black took back
+	/*
+	state[(7 * 8) + 7] = new Piece((char*)"H8", false, king);
+	state[(6 * 8) + 6] = new Piece((char*)"G7", false, pawn);
+	state[(6 * 8) + 7] = new Piece((char*)"H7", false, pawn);
+	state[(7 * 8) + 6] = new Piece((char*)"G8", false, rook);
+	state[(5 * 8) + 7] = new Piece((char*)"H6", true, knight);
+	state[(1 * 8) + 5] = new Piece((char*)"F2", true, pawn);
+	state[(1 * 8) + 6] = new Piece((char*)"G2", true, pawn);
+	state[(1 * 8) + 7] = new Piece((char*)"H2", true, pawn);
+	state[(0 * 8) + 5] = new Piece((char*)"F1", true, rook);
+	state[(0 * 8) + 6] = new Piece((char*)"G1", true, king);
+	*/
+	//in checkmate with it being your turn
+	/*
+	state[(7 * 8) + 7] = new Piece((char*)"H8", false, king);
+	state[(6 * 8) + 6] = new Piece((char*)"G7", false, pawn);
+	state[(6 * 8) + 7] = new Piece((char*)"H7", false, pawn);
+	state[(7 * 8) + 6] = new Piece((char*)"G8", false, rook);
+	state[(6 * 8) + 5] = new Piece((char*)"F7", true, knight);
+	state[(1 * 8) + 5] = new Piece((char*)"F2", true, pawn);
+	state[(1 * 8) + 6] = new Piece((char*)"G2", true, pawn);
+	state[(1 * 8) + 7] = new Piece((char*)"H2", true, pawn);
+	state[(0 * 8) + 5] = new Piece((char*)"F1", true, rook);
+	state[(0 * 8) + 6] = new Piece((char*)"G1", true, king);
+	*/
+	state[(7 * 8) + 7] = new Piece((char*)"H8", false, king);
+	state[(6 * 8) + 6] = new Piece((char*)"G7", false, pawn);
+	state[(6 * 8) + 7] = new Piece((char*)"H7", false, pawn);
+	state[(7 * 8) + 4] = new Piece((char*)"E8", false, rook);
+	state[(5 * 8) + 7] = new Piece((char*)"H6", true, knight);
+	state[(7 * 8) + 6] = new Piece((char*)"G8", true, queen);
+	state[(1 * 8) + 5] = new Piece((char*)"F2", true, pawn);
+	state[(1 * 8) + 6] = new Piece((char*)"G2", true, pawn);
+	state[(1 * 8) + 7] = new Piece((char*)"H2", true, pawn);
+	state[(0 * 8) + 5] = new Piece((char*)"F1", true, rook);
+	state[(0 * 8) + 6] = new Piece((char*)"G1", true, king);
+	Board* x = new Board(state);
+	x->whiteKingMoved = true;
+	x->blackKingMoved = true;
+	x->whiteTurn = false;
+	x->updateAllPieceMoves();
+	//printf("start state score %d\n", x->getScore());
 	x->printBoard();
 	x = x->pickSuccessor();
+	//printf("score %d\n", x->getScore());
+	x->printBoard();
+	x->whiteTurn = !x->whiteTurn;
+	//x = x->pickSuccessor();
+	x = x->makeBoards()[14];
+	x->whiteTurn = false;
+	printf("after hardcoded pick\n");
+	x->printBoard();
+	//x->whiteTurn = !x->whiteTurn;
+	//printf("specific score %d\n", x->makeBoards()[15]->pickSuccessor()->getScore());
+	printf("precheck we want to do\n");
+	x = x->pickSuccessor();
+	x->printBoard();
+	//final right check
+	x = x->pickSuccessor();
+	x->printBoard();
+	//x = x->pickSuccessor();
+	//x->printBoard();
+	//x->makeBoards()[14]->getScore();
+	/*
+	x = x->pickSuccessor();
+	printf("predMove %s\n", x->predMove);
 	printf("best successor\n");
 	x->printBoard();
-	printf("Here I am post\n");
+	x = x->pickSuccessor();
+	printf("best successor2\n");
+	x->printBoard();
+	*/
 	return !failed;
 }
 
