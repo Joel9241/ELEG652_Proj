@@ -718,6 +718,28 @@ bool puzzle1Test(){
 	return !failed;
 }
 
+bool puzzle2Test(){
+	bool failed = false;
+	Piece** state = new Piece*[64];
+	for(int i = 0; i < 8; i++){
+		for(int j = 0; j < 8; j++){
+			state[(i * 8) + j] = NULL;
+		}
+	}
+	state[(7 * 8) + 6] = new Piece((char*)"G8", true, queen);
+	state[(6 * 8) + 6] = new Piece((char*)"G7", false, rook);
+	state[(5 * 8) + 6] = new Piece((char*)"G6", false, rook);
+	state[(7 * 8) + 0] = new Piece((char*)"A8", false, knight);
+	Board* x = new Board(state);
+	x->whiteTurn = true;
+	x->updateAllPieceMoves();
+	x = x->pickSuccessor();
+	if(strcmp(x->predMove, "A8") != 0){
+		failed = true;
+	}
+	return !failed;
+}
+
 int main(){
 	/*
 	if(!initBoardTest()){
@@ -751,8 +773,13 @@ int main(){
 		printf("takePieceTest failed\n");
 	}
 	*/
+	/*
 	if(!puzzle1Test()){
 		printf("Failed Puzzle 1\n");
+	}
+	*/
+	if(!puzzle2Test()){
+		printf("Failed Puzzle 2\n");
 	}
 	printf("Finished tests\n");
 	return 0;

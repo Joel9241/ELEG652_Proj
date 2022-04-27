@@ -92,71 +92,33 @@ Board::Board(Board* b){
 }
 
 int Board::getScore(){
-	//depth of 5 takes super long so for now putting as 3
-	//printf("get score color %d\n", whiteTurn);
-	if(depth == 4){
-		//printf("hit depth\n");
+	if(depth == 2){
 		return score; 
 	}
-	/*
-	if(whiteTurn && (score > 900)){
-		
+	Board** choices = makeBoards();
+	if(choices[0] == NULL){
 		return score;
 	}
-	if(!whiteTurn && (score < -900)){
-		return score;
-	}
-	*/
-	//printf("depth less than 5 %d\n", depth);
-	//printf("premade Boards\n");
-	Board** choices = makeBoards(); //this makeBoards call seems to be breaking
-	//printf("made Boards\n");
 	int i = 1;
 	Board* successor = choices[0];
 	int bestScore = successor->getScore();
-	if(strcmp(predMove, "H8") == 0){
-		//printf("wt %d whiteTurn %d\n", wt, whiteTurn);
-		//printf("F7 boardpre\n");
-		//printBoard();
-		//printf("F7 boardpost\n");
-	}
-	//printf("predMove %s wt %d depth %d\n", predMove, whiteTurn, depth);
-	//printf("getScore call\n");
 	while(choices[i] != NULL){
 		int tmpScore = choices[i]->getScore();
-		//printf("tmpScore %d wt!! %d depth %d\n", tmpScore, whiteTurn, depth);
-		//printf("getScore i %d, predMove %s, score %d\n", i, choices[i]->predMove, tmpScore);
-		//if(strcmp(predMove, "F7") == 0){
-		//printf("tmpScore %d bestScore %d\n", tmpScore, bestScore);
-		//}
-		if(whiteTurn){
+		if(!whiteTurn){
 			if(tmpScore > bestScore){
-				//printf("reassign best score1\n");
 				successor = choices[i];
 				bestScore = tmpScore;
 			}
 		}
 		else{
 			if(tmpScore < bestScore){
-				//printf("reassign best score2\n");
 				successor = choices[i];
 				bestScore = tmpScore;
 			}
 		}
 		i++;
 	}
-	/*
-	if(strcmp(predMove, "H8") == 0){
-		if(bestScore < 1000){
-			printf("not 1000 h8 case\n");
-			printBoard();
-			printf("not 1000 h8 case\n");
-		}
-	}
-	printf("returned best score %d\n", bestScore);
-	*/
 	return bestScore;
-	//return 0;
 }
 
 Board* Board::pickSuccessor(){
@@ -164,14 +126,13 @@ Board* Board::pickSuccessor(){
 	Board** choices = makeBoards();
 	whiteTurn = !whiteTurn;
 	int i = 1;
-	//Board* successor = choices[0];
 	Board* successor = choices[0];
-	//printBoard();
-	//printf("successor difference\n");
-	//successor->printBoard();
+	if(choices[0] == NULL){
+		printf("what happened\n");
+	}
 	printf("pick successor color %d\n", whiteTurn);
 	int bestScore = successor->getScore();
-	//printf("predMove %s\n", predMove);
+	printf("after first get score %d\n", whiteTurn);
 	while(choices[i] != NULL){
 		int tmpScore = choices[i]->getScore();
 		printf("i %d, predMove %s, score %d whiteTurn %d\n", i, choices[i]->predMove, tmpScore, choices[i]->whiteTurn);
@@ -364,52 +325,9 @@ Board* Board::makeMove(Piece* p, char* loc){
 	newP->position[1] = loc[1];
 	newBoard->tiles[(((int) row - 49) * 8) + (((int) col) - 65)] = NULL;
 	newBoard->tiles[(((int) loc[1] - 49) * 8) + (((int) loc[0]) - 65)] = newP;
-	//Piece* tmp;
-	//char* tmpPosition;
-	//char* kingPosition;
-	//should just be call to all updatePieceMoves
 	newBoard->depth = depth + 1;
 	newBoard->whiteTurn = !whiteTurn;
 	newBoard->updateAllPieceMoves();
-	return newBoard;
-	/*
-	if(newP->isWhite()){
-		for(int i = 0; i < newBoard->numWhitePieces; i++){
-			newBoard->updatePieceMoves(newBoard->whitePieces[i]);
-		}
-		for(int i = 0; i < newBoard->numBlackPieces; i++){
-			tmp = newBoard->blackPieces[i];
-			newBoard->updatePieceMoves(tmp);
-			for(int j = 0; j < tmp->numMoves; j++){
-				tmpPosition = tmp->getPosition();
-				kingPosition = newBoard->whiteKing->getPosition();
-				if((tmpPosition[0] == kingPosition[0]) && (tmpPosition[1] == kingPosition[1])){
-					newBoard->score = -99999;
-					return newBoard;
-				}
-			}
-		}
-
-	}
-	else{
-		for(int i = 0; i < newBoard->numWhitePieces; i++){
-			tmp = newBoard->whitePieces[i];
-			newBoard->updatePieceMoves(tmp);
-			for(int j = 0; j < tmp->numMoves; j++){
-				tmpPosition = tmp->getPosition();
-				kingPosition = newBoard->blackKing->getPosition();
-				if((tmpPosition[0] == kingPosition[0]) && (tmpPosition[1] == kingPosition[1])){
-					newBoard->score = 99999;
-					return newBoard;
-				}
-			}
-		}
-		for(int i = 0; i < newBoard->numBlackPieces; i++){
-			newBoard->updatePieceMoves(newBoard->blackPieces[i]);
-			return newBoard;
-		}
-	}
-	*/
 	return newBoard;
 }
 
@@ -422,7 +340,6 @@ void Board::updateAllPieceMoves(){
 	}
 }
 
-//Don't forget to check for checks
 void Board::updatePieceMoves(Piece* p){
 	PieceType type = p->getType();
 	if(type == pawn){
