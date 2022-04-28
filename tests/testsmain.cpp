@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "Board.hpp"
+#include <time.h>
 
 bool initBoardTest(){
 	bool failed = false;
@@ -764,9 +765,9 @@ bool puzzle3Test(){
 	x->whiteKingMoved = true;
 	x->blackKingMoved = true;
 	x->updateAllPieceMoves();
-	//x->printBoard();
+	x->printBoard();
 	x = x->pickSuccessor();
-	//x->printBoard();
+	x->printBoard();
 	if(strcmp(x->predMove, "G8") != 0){
 		failed = true;
 	}
@@ -788,9 +789,9 @@ bool puzzle2Test(){
 	Board* x = new Board(state);
 	x->whiteTurn = true;
 	x->updateAllPieceMoves();
-	//x->printBoard();
+	x->printBoard();
 	x = x->pickSuccessor();
-	//x->printBoard();
+	x->printBoard();
 	if(strcmp(x->predMove, "A8") != 0){
 		failed = true;
 	}
@@ -834,12 +835,20 @@ int main(){
 	}
 	printf("end of puzzle 1 \n");
 	*/
+	int puz3Time;
+	puz3Time = clock();
 	if(!puzzle3Test()){
 		printf("Failed Puzzle 3\n");
 	}
+	puz3Time = clock() - puz3Time;
+	printf("Running time of Puzzle 3 %d\n", puz3Time);
+	int puz2Time;
+	puz2Time = clock();
 	if(!puzzle2Test()){
 		printf("Failed Puzzle 2\n");
 	}
+	puz2Time = clock() - puz2Time;
+	printf("Running time of Puzzle 2 %d\n", puz2Time);
 	printf("Finished tests\n");
 	return 0;
 }

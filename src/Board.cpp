@@ -92,7 +92,7 @@ Board::Board(Board* b){
 }
 
 int Board::getScore(bool print){
-	if(depth == 2){
+	if(depth == 5){
 		return score; 
 	}
 	Board** choices = makeBoards();
@@ -104,23 +104,9 @@ int Board::getScore(bool print){
 	int bestScore = successor->getScore(false);
 	while(choices[i] != NULL){
 		int tmpScore = choices[i]->getScore(false);
-		/*
 		if(print){
-			printf("tmpScore %d wt %d\n", tmpScore, whiteTurn);
-			if(tmpScore == 3){
-				printf("pre rec call\n");
-				choices[i]->getScore(true);
-				printf("post rec call\n");
-
-				//printf("move %s\n", choices[i]->predMove);
-			}
+			printf("tmpScore %d %s wt %d\n", tmpScore, choices[i]->predMove, choices[i]->whiteTurn);
 		}
-		*/
-		/*
-		if(strcmp(predMove, "G8") == 0){
-			printf("tmpScore %d\n", tmpScore);
-		}
-		*/
 		if(!whiteTurn){
 			if(tmpScore > bestScore){
 				successor = choices[i];
@@ -135,12 +121,7 @@ int Board::getScore(bool print){
 		}
 		i++;
 	}
-	/*
-	if(print){
-		printf("tmpScore %d\n", bestScore);
-	}
-	*/
-	return bestScore;
+	return score + .9 * bestScore;
 }
 
 Board* Board::pickSuccessor(){
@@ -152,16 +133,14 @@ Board* Board::pickSuccessor(){
 	int bestScore = successor->getScore(false);
 	while(choices[i] != NULL){
 		int tmpScore;
-		/*
-		if(strcmp(choices[i]->predMove, "G8") == 0){
+		if(strcmp(choices[i]->predMove, "D5") == 0){
 			tmpScore = choices[i]->getScore(true);
 		}
 		else{
 			tmpScore = choices[i]->getScore(false);
 		}
-		*/
-		tmpScore = choices[i]->getScore(false);
-		//printf("i %d, predMove %s, score %d whiteTurn %d\n", i, choices[i]->predMove, tmpScore, choices[i]->whiteTurn);
+		//tmpScore = choices[i]->getScore(false);
+		printf("i %d, predMove %s, score %d whiteTurn %d\n", i, choices[i]->predMove, tmpScore, choices[i]->whiteTurn);
 		if(whiteTurn){
 			if(tmpScore > bestScore){
 				successor = choices[i];
