@@ -735,9 +735,9 @@ bool puzzle1Test(){
 	x->whiteKingMoved = true;
 	x->blackKingMoved = true;
 	x->updateAllPieceMoves();
-	x->printBoard();
+	//x->printBoard();
 	x = x->pickSuccessor();
-	x->printBoard();
+	//x->printBoard();
 	return !failed;
 }
 
@@ -765,9 +765,9 @@ bool puzzle3Test(){
 	x->whiteKingMoved = true;
 	x->blackKingMoved = true;
 	x->updateAllPieceMoves();
-	x->printBoard();
+	//x->printBoard();
 	x = x->pickSuccessor();
-	x->printBoard();
+	//x->printBoard();
 	if(strcmp(x->predMove, "G8") != 0){
 		failed = true;
 	}
@@ -789,9 +789,9 @@ bool puzzle2Test(){
 	Board* x = new Board(state);
 	x->whiteTurn = true;
 	x->updateAllPieceMoves();
-	x->printBoard();
+	//x->printBoard();
 	x = x->pickSuccessor();
-	x->printBoard();
+	//x->printBoard();
 	if(strcmp(x->predMove, "A8") != 0){
 		failed = true;
 	}
@@ -829,12 +829,13 @@ int main(){
 	if(!takePieceTest()){
 		printf("takePieceTest failed\n");
 	}
-	/*
+	int puz1Time;
+	puz1Time = clock();
 	if(!puzzle1Test()){
 		printf("Failed Puzzle 1\n");
 	}
-	printf("end of puzzle 1 \n");
-	*/
+	puz1Time = clock() - puz1Time;
+	printf("Running time of Puzzle 1 %d\n", puz1Time);
 	int puz3Time;
 	puz3Time = clock();
 	if(!puzzle3Test()){
