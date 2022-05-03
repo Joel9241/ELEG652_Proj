@@ -170,9 +170,10 @@ Board* Board::pickSuccessor(){
 		i++;
 	}
 	int scores[i];
-	for(int j = 1; j < i; j++){
+
+	for(int j = 0; j < i; j++){
 		//int tmpScore = choices[j]->getScore(false);
-		boost::bind(&Board::getScoreParallel, choices[j], scores, j);
+		new boost::thread(boost::bind(&Board::getScoreParallel, choices[j], scores, j));
 		//boost::thread *thr = new boost::thread(boost::bind(&Board::getScoreParallel, choices[j])(scores, j));
 		// real backupboost::thread *thr = new boost::thread(boost::bind(&Board::getScore, choices[j], false));
 		//boost::thread *thr = new boost::thread(boost::bind(&Board::threadFunc, choices[j], j));
@@ -194,7 +195,7 @@ Board* Board::pickSuccessor(){
 	Board* successor = choices[0];
 	int bestScore = successor->getScore(false);
 	int tmpScore;
-	for(int j = 1; j < i; j++){
+	for(int j = 0; j < i; j++){
 		tmpScore = scores[j];
 		if(whiteTurn){
 			if(tmpScore > bestScore){
