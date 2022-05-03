@@ -3,6 +3,7 @@
 #include "Piece.hpp"
 #include <cstdio>
 #include <cstring>
+#include <boost/thread/thread.hpp>
 
 class Piece;
 
@@ -13,6 +14,7 @@ class Board{
 	Board(Piece** initState);
 	Board(Board* b);
 	int getScore(bool print);
+	void getScoreParallel(int* scores, int index);
 	Board* pickSuccessor();
 	Board** makeBoards();
 	Piece** tiles; 
@@ -45,4 +47,5 @@ class Board{
 	bool blackRightRookMoved = false;
 	void updateAllPieceMoves();
 	void printBoard();
+	void threadFunc(int x);
 };

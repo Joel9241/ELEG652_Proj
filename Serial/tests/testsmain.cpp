@@ -798,6 +798,12 @@ bool puzzle2Test(){
 	return !failed;
 }
 
+bool plainBoardTest(){
+	Board* x = new Board();
+	x->pickSuccessor();
+	return true;
+}
+
 int main(){
 	if(!initBoardTest()){
 		printf("initBoardTest Failed\n");
@@ -851,5 +857,11 @@ int main(){
 	puz2Time = clock() - puz2Time;
 	printf("Running time of Puzzle 2 %d\n", puz2Time);
 	printf("Finished tests\n");
+	
+	int ptTime;
+	ptTime = clock();
+	plainBoardTest();
+	ptTime = clock() - ptTime;
+	printf("Running time of Plain Board %d\n", ptTime);
 	return 0;
 }

@@ -769,6 +769,7 @@ bool puzzle3Test(){
 	x = x->pickSuccessor();
 	//x->printBoard();
 	if(strcmp(x->predMove, "G8") != 0){
+		printf("Failed test 3, should have been G8, instead got %s\n", x->predMove);
 		failed = true;
 	}
 	return !failed;
@@ -793,9 +794,16 @@ bool puzzle2Test(){
 	x = x->pickSuccessor();
 	//x->printBoard();
 	if(strcmp(x->predMove, "A8") != 0){
+		printf("Failed test 2, should have been A8, instead got %s\n", x->predMove);
 		failed = true;
 	}
 	return !failed;
+}
+
+bool plainBoardTest(){
+	Board* x = new Board();
+	x->pickSuccessor();
+	return true;
 }
 
 int main(){
@@ -850,6 +858,13 @@ int main(){
 	}
 	puz2Time = clock() - puz2Time;
 	printf("Running time of Puzzle 2 %d\n", puz2Time);
+	
+	int ptTime;
+	ptTime = clock();
+	plainBoardTest();
+	ptTime = clock() - ptTime;
+	printf("Running time of Plain Board %d\n", ptTime);
 	printf("Finished tests\n");
+	
 	return 0;
 }

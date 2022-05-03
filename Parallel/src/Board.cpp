@@ -62,6 +62,10 @@ Board::Board(Board* b){
 	Piece *tmp;
 	for(int i = 0; i < 8; i++){
 		for(int j = 0; j < 8; j++){
+			/*
+			if(!isEmpty(i + 49, j + 65)){
+				tmp = getPiece(i + 49, j + 65);	
+			*/
 			if(!isEmpty(i + 65, j + 49)){
 				tmp = getPiece(i + 65, j + 49);	
 				if(tmp->isWhite()){
@@ -124,26 +128,22 @@ int Board::getScore(bool print){
 	return score + .9 * bestScore;
 }
 
-Board* Board::pickSuccessor(){
-	whiteTurn = !whiteTurn;
+void Board::getScoreParallel(int* scores, int index){
+	if(depth == 4){
+		scores[index] = score; 
+		return;
+	}
 	Board** choices = makeBoards();
-	whiteTurn = !whiteTurn;
+	if(choices[0] == NULL){
+		scores[index] = score;
+		return;
+	}
 	int i = 1;
 	Board* successor = choices[0];
 	int bestScore = successor->getScore(false);
 	while(choices[i] != NULL){
-		int tmpScore;
-		/*
-		if(strcmp(choices[i]->predMove, "D5") == 0){
-			tmpScore = choices[i]->getScore(true);
-		}
-		else{
-			tmpScore = choices[i]->getScore(false);
-		}
-		*/
-		tmpScore = choices[i]->getScore(false);
-		//printf("i %d, predMove %s, score %d whiteTurn %d\n", i, choices[i]->predMove, tmpScore, choices[i]->whiteTurn);
-		if(whiteTurn){
+		int tmpScore = choices[i]->getScore(false);
+		if(!whiteTurn){
 			if(tmpScore > bestScore){
 				successor = choices[i];
 				bestScore = tmpScore;
@@ -157,9 +157,66 @@ Board* Board::pickSuccessor(){
 		}
 		i++;
 	}
+	scores[index] = score + .9 * bestScore;
+	return;
+}
+
+Board* Board::pickSuccessor(){
+	whiteTurn = !whiteTurn;
+	Board** choices = makeBoards();
+	whiteTurn = !whiteTurn;
+	int i = 0;
+	while(choices[i] != NULL){
+		i++;
+	}
+	int scores[i];
+	for(int j = 1; j < i; j++){
+		//int tmpScore = choices[j]->getScore(false);
+		boost::bind(&Board::getScoreParallel, choices[j], scores, j);
+		//boost::thread *thr = new boost::thread(boost::bind(&Board::getScoreParallel, choices[j])(scores, j));
+		// real backupboost::thread *thr = new boost::thread(boost::bind(&Board::getScore, choices[j], false));
+		//boost::thread *thr = new boost::thread(boost::bind(&Board::threadFunc, choices[j], j));
+		/*
+		if(whiteTurn){
+			if(tmpScore > bestScore){
+				successor = choices[j];
+				bestScore = tmpScore;
+			}
+		}
+		else{
+			if(tmpScore < bestScore){
+				successor = choices[j];
+				bestScore = tmpScore;
+			}
+		}
+		*/
+	}
+	Board* successor = choices[0];
+	int bestScore = successor->getScore(false);
+	int tmpScore;
+	for(int j = 1; j < i; j++){
+		tmpScore = scores[j];
+		if(whiteTurn){
+			if(tmpScore > bestScore){
+				successor = choices[j];
+				bestScore = tmpScore;
+			}
+		}
+		else{
+			if(tmpScore < bestScore){
+				successor = choices[j];
+				bestScore = tmpScore;
+			}
+		}
+
+	}
 	successor->whiteTurn = !whiteTurn;
 	successor->depth = 0;
 	return successor;
+}
+
+void Board::threadFunc(int x){
+	printf("in threadFunc %d\n", x);
 }
 
 Board** Board::makeBoards(){
@@ -179,34 +236,18 @@ Board** Board::makeBoards(){
 	}
 	Board** successors = new Board*[numboards + 1];
 	successors[numboards] = NULL;
-	int i = 0;
-	int wPieceIndex = 0;
-	int bPieceIndex = 0;
-	while(i < numboards){
-		int tmp;
-		if(!whiteTurn){
-			tmp = whitePieces[wPieceIndex]->numMoves;
+	
+	int sIndex = 0;
+	//boost::thread *thr = new boost::thread(boost::bind(&Board::threadFunc, this));
+	for(int i = 0; i < numPieces; i++){
+		Board** partSuccessors = new Board*[p[i]->numMoves];
+		for(int j = 0; j < p[i]->numMoves; j++){
+			partSuccessors[j] = makeMove(p[i], p[i]->getIthMove(j));
 		}
-		else{
-			tmp = blackPieces[bPieceIndex]->numMoves;
+		for(int k = sIndex; k < p[i]->numMoves + sIndex; k++){
+			successors[k] = partSuccessors[k - sIndex];
 		}
-		int j = 0; 
-		while(j < tmp){
-			if(!whiteTurn){
-				successors[i] = makeMove(whitePieces[wPieceIndex], whitePieces[wPieceIndex]->getIthMove(j));
-			}
-			else{
-				successors[i] = makeMove(blackPieces[bPieceIndex], blackPieces[bPieceIndex]->getIthMove(j));
-			}
-			j += 1;
-			i += 1;
-		}
-		if(!whiteTurn){
-			wPieceIndex++;
-		}
-		else{
-			bPieceIndex++;
-		}
+		sIndex += p[i]->numMoves;
 	}
 	return successors;
 }
@@ -271,6 +312,10 @@ void Board::initBoard(){
 }
 
 bool Board::isEmpty(char col, char row){
+	if(((((int) row - 49) * 8) + (((int) col) - 65)) < 0){
+		printf("out of bounds check\n");
+		printf("col %d, row %d\n", (int)col - 65, (int)row - 49);
+	}
 	return tiles[(((int) row - 49) * 8) + (((int) col) - 65)] == NULL;
 }
 
@@ -438,7 +483,7 @@ void Board::updateRookMoves(Piece *p){
 	char row = (int)p->getPosition()[1];
 	int colOffset = 1;
 	int rowOffset = 0;
-	while(isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset)) && ((int)col - 65 + colOffset < 8)){
+	while((((int)col - 65 + colOffset < 8)) && isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset))){
 		addMove(p, (char)(col + colOffset), (char)(row + rowOffset));
 		colOffset++;
 	}
@@ -450,7 +495,7 @@ void Board::updateRookMoves(Piece *p){
 		}
 	}
 	colOffset = 1;
-	while(isEmpty((char)((int)col - colOffset), (char)((int)row + rowOffset)) && ((int)col - 65 - colOffset >= 0)){
+	while(((int)col - 65 - colOffset >= 0) && isEmpty((char)((int)col - colOffset), (char)((int)row + rowOffset))){
 		addMove(p, (char)(col - colOffset), (char)(row + rowOffset));
 		colOffset++;
 	}
@@ -463,7 +508,7 @@ void Board::updateRookMoves(Piece *p){
 	}
 	colOffset = 0;
 	rowOffset = 1;
-	while(isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset)) && ((int)row - 49 + rowOffset < 8)){
+	while(((int)row - 49 + rowOffset < 8) && isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset))){
 		addMove(p, (char)(col + colOffset), (char)(row + rowOffset));
 		rowOffset++;
 	}
@@ -475,7 +520,7 @@ void Board::updateRookMoves(Piece *p){
 		}
 	}
 	rowOffset = 1;
-	while(isEmpty((char)((int)col + colOffset), (char)((int)row - rowOffset)) && ((int)row - 49 - rowOffset >= 0)){
+	while(((int)row - 49 - rowOffset >= 0) && isEmpty((char)((int)col + colOffset), (char)((int)row - rowOffset))){
 		addMove(p, (char)(col + colOffset), (char)(row - rowOffset));
 		rowOffset++;
 	}
@@ -588,7 +633,7 @@ void Board::updateKingMoves(Piece* p){
 		rowOffset = rowOffsets[i];
 		icol = (int)col - 65 + colOffset;
 		irow = (int)row - 49 + rowOffset;
-		isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset));
+		//isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset));
 		if((icol < 8) && (icol >= 0) && (irow < 8) && (irow >= 0)){ 
 			if(isEmpty((char)((int)col + colOffset), (char)((int)row + rowOffset))){
 				addMove(p, (char)(col + colOffset), (char)(row + rowOffset));
