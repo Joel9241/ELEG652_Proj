@@ -128,6 +128,17 @@ int Board::getScore(bool print){
 	return score + .9 * bestScore;
 }
 
+void threadGetScore(Board** choices, int* scores, int index, int max){
+
+	for(int i = 0; i < NUM_THREADS; i++){
+		//printf("i %d\n", i);
+		if((index + i) < max){
+			scores[index + i] = choices[index + i]->getScore(false);
+		}
+	}
+}
+
+
 void Board::getScoreParallel(int* scores, int index){
 	if(depth == 4){
 		scores[index] = score; 
@@ -161,6 +172,39 @@ void Board::getScoreParallel(int* scores, int index){
 	return;
 }
 
+/*
+Board* Board::pickSuccessor(){
+    whiteTurn = !whiteTurn;
+    Board** choices = makeBoards();
+    whiteTurn = !whiteTurn;
+    int i = 1;
+    Board* successor = choices[0];
+    int bestScore = successor->getScore(false);
+    while(choices[i] != NULL){
+        int tmpScore;
+        tmpScore = choices[i]->getScore(false);
+        if(whiteTurn){
+            if(tmpScore > bestScore){
+                successor = choices[i];
+                bestScore = tmpScore;
+            }
+        }
+        else{
+            if(tmpScore < bestScore){
+                successor = choices[i];
+                bestScore = tmpScore;
+            }
+        }
+        i++;
+    }
+    successor->whiteTurn = !whiteTurn;
+    successor->depth = 0;
+    return successor;
+}
+*/
+
+
+//slower parallel version
 Board* Board::pickSuccessor(){
 	whiteTurn = !whiteTurn;
 	Board** choices = makeBoards();
@@ -170,33 +214,20 @@ Board* Board::pickSuccessor(){
 		i++;
 	}
 	int scores[i];
-	boost::thread *threads[i];
-	for(int j = 0; j < i; j++){
-		//int tmpScore = choices[j]->getScore(false);
-		threads[j] = new boost::thread(boost::bind(&Board::getScoreParallel, choices[j], scores, j));
-		//boost::thread *thr = new boost::thread(boost::bind(&Board::getScoreParallel, choices[j])(scores, j));
-		// real backupboost::thread *thr = new boost::thread(boost::bind(&Board::getScore, choices[j], false));
-		//boost::thread *thr = new boost::thread(boost::bind(&Board::threadFunc, choices[j], j));
-		/*
-		if(whiteTurn){
-			if(tmpScore > bestScore){
-				successor = choices[j];
-				bestScore = tmpScore;
-			}
-		}
-		else{
-			if(tmpScore < bestScore){
-				successor = choices[j];
-				bestScore = tmpScore;
-			}
-		}
-		*/
+	int iter = ceil((float)i / NUM_THREADS);
+	boost::thread_group g;
+	for(int j = 0; j < iter; j++){
+		//threads[j] = new boost::thread(boost::bind(&threadGetScore, choices, scores, j * NUM_THREADS, i));
+		//g.add_thread(new boost::thread(boost::bind(&threadGetScore, choices, scores, j * NUM_THREADS, i)));
+		g.create_thread(boost::bind(&threadGetScore, choices, scores, j * NUM_THREADS, i));
+		//real prev
+		//threads[j] = new boost::thread(boost::bind(&Board::getScoreParallel, choices[j], scores, j));
 	}
+	g.join_all();
 	Board* successor = choices[0];
-	int bestScore = successor->getScore(false);
+	int bestScore = scores[0];
 	int tmpScore;
-	for(int j = 0; j < i; j++){
-		threads[j]->join();
+	for(int j = 1; j < i; j++){
 		tmpScore = scores[j];
 		if(whiteTurn){
 			if(tmpScore > bestScore){
@@ -384,8 +415,33 @@ Board* Board::makeMove(Piece* p, char* loc){
 	return newBoard;
 }
 
+/*
+void updateWhiteMoves(Board* x){
+	for(int i = 0; i < x->numWhitePieces; i++){
+		x->updatePieceMoves(x->whitePieces[i]);
+	}
+}
+void updateBlackMoves(Board* x){
+	for(int i = 0; i < x->numBlackPieces; i++){
+		x->updatePieceMoves(x->blackPieces[i]);
+	}
+}
+*/
+
 void Board::updateAllPieceMoves(){
+	//yas
+	//boost::thread *threads[iter];
+	//threads[j] = new boost::thread(boost::bind(&threadGetScore, choices, scores, j * NUM_THREADS, i));
+	//boost::thread* x = new boost::thread(boost::bind(&Board::updatePieceMoves, this, whitePieces[0]));
+	//x->join();
+	//boost::thread *x1 = new boost::thread(boost::bind(&updateWhiteMoves, this));
+	//boost::thread *x2 = new boost::thread(boost::bind(&updateBlackMoves, this));
+	//x1->join();
+	//x2->join();
+	//updateWhiteMoves(this);
+	//updateBlackMoves(this);
 	for(int i = 0; i < numWhitePieces; i++){
+		//new boost::thread(boost::bind(&Board::updatePieceMoves, this, whitePieces[i]));
 		updatePieceMoves(whitePieces[i]);
 	}
 	for(int i = 0; i < numBlackPieces; i++){

@@ -1,6 +1,6 @@
 CC = g++
-CCFLAGS = -g -lboost_thread -lpthread -L /usr/lib/
-#CCFLAGS = -g -fopenmp -O3 -flto -march=native
+CCFLAGS = -g -lboost_thread -lpthread -L /usr/lib/ -DNUM_THREADS=24
+#CCFLAGS = -g -lboost_thread -lpthread -L /usr/lib/ -DNUM_THREADS=24 -O3 -flto -march=native
 
 
 ai: chess.exe

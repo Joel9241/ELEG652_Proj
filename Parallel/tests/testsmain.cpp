@@ -806,6 +806,50 @@ bool plainBoardTest(){
 	return true;
 }
 
+bool complicatedBoardTest(){
+	Piece** state = new Piece*[64];
+	for(int i = 0; i < 8; i++){
+		for(int j = 0; j < 8; j++){
+			state[(i * 8) + j] = NULL;
+		}
+	}
+	state[(7 * 8) + 0] = new Piece((char*)"A8", false, rook);
+	state[(4 * 8) + 0] = new Piece((char*)"A5", false, pawn);
+	state[(1 * 8) + 0] = new Piece((char*)"A2", true, pawn);
+	state[(0 * 8) + 0] = new Piece((char*)"A1", true, rook);
+	state[(5 * 8) + 1] = new Piece((char*)"B6", false, pawn);
+	state[(2 * 8) + 1] = new Piece((char*)"B3", true, queen);
+	state[(1 * 8) + 1] = new Piece((char*)"B2", true, pawn);
+	state[(2 * 8) + 2] = new Piece((char*)"C3", true, pawn);
+	state[(0 * 8) + 2] = new Piece((char*)"C1", true, bishop);
+	state[(7 * 8) + 3] = new Piece((char*)"D8", false, queen);
+	state[(5 * 8) + 3] = new Piece((char*)"D6", false, bishop);
+	state[(4 * 8) + 3] = new Piece((char*)"D5", false, pawn);
+	state[(3 * 8) + 3] = new Piece((char*)"D4", true, pawn);
+	state[(5 * 8) + 4] = new Piece((char*)"E6", false, pawn);
+	state[(1 * 8) + 4] = new Piece((char*)"E2", true, rook);
+	state[(7 * 8) + 5] = new Piece((char*)"F8", false, rook);
+	state[(6 * 8) + 5] = new Piece((char*)"F7", false, pawn);
+	state[(5 * 8) + 5] = new Piece((char*)"F6", false, knight);
+	state[(2 * 8) + 5] = new Piece((char*)"F3", true, pawn);
+	state[(7 * 8) + 6] = new Piece((char*)"G8", false, king);
+	state[(6 * 8) + 6] = new Piece((char*)"G7", false, pawn);
+	state[(2 * 8) + 6] = new Piece((char*)"G3", true, pawn);
+	state[(1 * 8) + 6] = new Piece((char*)"G2", true, king);
+	state[(5 * 8) + 7] = new Piece((char*)"H6", false, pawn);
+	state[(2 * 8) + 7] = new Piece((char*)"H3", true, pawn);
+	state[(1 * 8) + 7] = new Piece((char*)"H2", true, knight);
+	Board* x = new Board(state);
+	x->whiteTurn = true;
+	x->whiteKingMoved = true;
+	x->blackKingMoved = true;
+	x->updateAllPieceMoves();
+	x = x->pickSuccessor();
+
+	return true;
+}
+
+
 int main(){
 	if(!initBoardTest()){
 		printf("initBoardTest Failed\n");
@@ -864,6 +908,13 @@ int main(){
 	plainBoardTest();
 	ptTime = clock() - ptTime;
 	printf("Running time of Plain Board %d\n", ptTime);
+
+	int ctTime;
+	ctTime = clock();
+	complicatedBoardTest();
+	ctTime = clock() - ctTime;
+	printf("Running time of Complicated Board %d\n", ctTime);
+	
 	printf("Finished tests\n");
 	
 	return 0;
