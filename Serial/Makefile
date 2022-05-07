@@ -1,5 +1,5 @@
 CC = g++
-CCFLAGS = -g
+CCFLAGS = -g -O3
 
 ai: chess.exe
 

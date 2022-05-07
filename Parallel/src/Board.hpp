@@ -4,6 +4,12 @@
 #include <cstdio>
 #include <cstring>
 #include <boost/thread/thread.hpp>
+#include <boost/thread/barrier.hpp>
+#include <boost/asio/thread_pool.hpp>
+#include <boost/asio.hpp>
+	
+inline boost::asio::thread_pool *tpool;
+inline boost::barrier *poolb;
 
 class Piece;
 
@@ -48,4 +54,5 @@ class Board{
 	void updateAllPieceMoves();
 	void printBoard();
 	void threadFunc(int x);
+	void static threadGetScore(Board** choices, int* scores, int index, int max);
 };

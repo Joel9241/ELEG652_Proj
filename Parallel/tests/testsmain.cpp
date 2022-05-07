@@ -3,6 +3,9 @@
 #include "Board.hpp"
 #include <time.h>
 
+inline boost::asio::thread_pool gtpool(NUM_THREADS);
+inline boost::barrier gb(NUM_THREADS + 1);
+
 bool initBoardTest(){
 	bool failed = false;
 	Board x = Board();
@@ -851,6 +854,8 @@ bool complicatedBoardTest(){
 
 
 int main(){
+	tpool = &gtpool;
+	poolb = &gb;
 	if(!initBoardTest()){
 		printf("initBoardTest Failed\n");
 	}
@@ -888,6 +893,7 @@ int main(){
 	}
 	puz1Time = clock() - puz1Time;
 	printf("Running time of Puzzle 1 %d\n", puz1Time);
+
 	int puz3Time;
 	puz3Time = clock();
 	if(!puzzle3Test()){
@@ -895,6 +901,7 @@ int main(){
 	}
 	puz3Time = clock() - puz3Time;
 	printf("Running time of Puzzle 3 %d\n", puz3Time);
+	
 	int puz2Time;
 	puz2Time = clock();
 	if(!puzzle2Test()){
@@ -917,5 +924,7 @@ int main(){
 	
 	printf("Finished tests\n");
 	
+	gtpool.wait();
+
 	return 0;
 }

@@ -128,14 +128,18 @@ int Board::getScore(bool print){
 	return score + .9 * bestScore;
 }
 
-void threadGetScore(Board** choices, int* scores, int index, int max){
-
-	for(int i = 0; i < NUM_THREADS; i++){
+void Board::threadGetScore(Board** choices, int* scores, int index, int max){
+	int lim = ceil((float)max / NUM_THREADS);
+	//printf("lim %d\n", lim);
+	for(int i = 0; i < lim; i++){
+	//for(int i = 0; i < NUM_THREADS; i++){
 		//printf("i %d\n", i);
 		if((index + i) < max){
 			scores[index + i] = choices[index + i]->getScore(false);
 		}
 	}
+	poolb->wait();
+	//printf("past wait\n");
 }
 
 
@@ -204,6 +208,10 @@ Board* Board::pickSuccessor(){
 */
 
 
+void del(){
+
+}
+
 //slower parallel version
 Board* Board::pickSuccessor(){
 	whiteTurn = !whiteTurn;
@@ -214,16 +222,22 @@ Board* Board::pickSuccessor(){
 		i++;
 	}
 	int scores[i];
-	int iter = ceil((float)i / NUM_THREADS);
-	boost::thread_group g;
-	for(int j = 0; j < iter; j++){
+	//int iter = ceil((float)i / NUM_THREADS);
+	//boost::thread_group g;
+	for(int j = 0; j < NUM_THREADS; j++){
+	//for(int j = 0; j < iter; j++){
 		//threads[j] = new boost::thread(boost::bind(&threadGetScore, choices, scores, j * NUM_THREADS, i));
 		//g.add_thread(new boost::thread(boost::bind(&threadGetScore, choices, scores, j * NUM_THREADS, i)));
-		g.create_thread(boost::bind(&threadGetScore, choices, scores, j * NUM_THREADS, i));
+		//boost::asio::post(*tpool, del);
+		//printf("post\n");
+		boost::asio::post(*tpool, boost::bind(&Board::threadGetScore, choices, scores, j * NUM_THREADS, i));
+		//boost::asio::post(&poolb, boost::bind(&Board::threadGetScore, choices, scores, j * NUM_THREADS, i));
+		//g.create_thread(boost::bind(&threadGetScore, choices, scores, j * NUM_THREADS, i));
 		//real prev
 		//threads[j] = new boost::thread(boost::bind(&Board::getScoreParallel, choices[j], scores, j));
 	}
-	g.join_all();
+	poolb->wait();
+	//g.join_all();
 	Board* successor = choices[0];
 	int bestScore = scores[0];
 	int tmpScore;
@@ -429,7 +443,6 @@ void updateBlackMoves(Board* x){
 */
 
 void Board::updateAllPieceMoves(){
-	//yas
 	//boost::thread *threads[iter];
 	//threads[j] = new boost::thread(boost::bind(&threadGetScore, choices, scores, j * NUM_THREADS, i));
 	//boost::thread* x = new boost::thread(boost::bind(&Board::updatePieceMoves, this, whitePieces[0]));
